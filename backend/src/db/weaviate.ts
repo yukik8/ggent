@@ -31,8 +31,9 @@ export async function vectorSearch(
 
 function defaultVectorizer() {
   return weaviate.configure.vectors.text2VecOpenAI({
+    name: "default",
     model: "text-embedding-3-small",
-  });
+  } as never);
 }
 
 export async function ensureCollection(name: string): Promise<void> {
