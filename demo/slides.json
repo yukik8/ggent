@@ -1,0 +1,60 @@
+{
+  "deck_title": "Hoshino Premium Bottled Matcha — Launch Proposal",
+  "client": "Hoshino Beverage",
+  "generated_by": "placeholder — replace by running /ace-review",
+  "slides": [
+    {
+      "n": 1,
+      "title": "The Insight",
+      "bullets": [
+        "Affluent women in their 50s don't buy tea for thrift — they buy a shared health ritual.",
+        "One persona, one habit moment: the 3pm reset she shares with her husband."
+      ],
+      "visual_hint": "single persona photo, one stat overlay",
+      "evidence": [
+        { "id": "jdg-insight-first", "confidence": 0.8, "why": "insight-first structure wins (3 supporting outcomes)" },
+        { "id": "pres-hoshino-2026-02-final", "why": "same client, same segment — the ritual framing won last time" }
+      ]
+    },
+    {
+      "n": 2,
+      "title": "The Audience, In Their Own Data",
+      "bullets": [
+        "TV 58% daily reach; TikTok 41% via family (F50 media habits survey, Mar 2026).",
+        "Expert endorsement drives trust in this segment."
+      ],
+      "visual_hint": "two big numbers from the survey",
+      "evidence": [
+        { "id": "data-survey-f50-media", "why": "owned research, directly applicable" },
+        { "id": "jdg-survey-backed", "confidence": 0.7, "why": "survey-backed decks win" }
+      ]
+    },
+    {
+      "n": 3,
+      "title": "Creative Direction",
+      "bullets": [
+        "30s TV spot anchored on the shared ritual moment, expert voice-over.",
+        "Premium cue: craftsmanship, not price."
+      ],
+      "visual_hint": "storyboard frames",
+      "evidence": [
+        { "id": "pres-aeonmart-2026-01-final", "why": "self-reward framing succeeded with the same segment" }
+      ]
+    }
+  ],
+  "avoided_risks": [
+    {
+      "fail_case": "out-fittech-2026-04",
+      "lesson": "Broad targeting reads as generic — we commit to ONE persona."
+    },
+    {
+      "fail_case": "out-sakura-2026-06",
+      "lesson": "Insight must match the client's own research — validated against Hoshino's brief before slide 1."
+    }
+  ],
+  "prediction": {
+    "id": "pred-hoshino-matcha-2026-07",
+    "expects": "success — insight-first + survey-backed + same-client precedent all align",
+    "risks": "if lost, likely on price positioning (cf. out-tokai-2026-02 pattern)"
+  }
+}

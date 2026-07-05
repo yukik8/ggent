@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ggent — generic AI vs company brain</title>
+<style>
+  :root { --bg:#0e1116; --panel:#161b23; --line:#2a3240; --text:#dbe2ec; --dim:#8a94a6;
+          --gold:#f5c542; --red:#e05555; --green:#4caf78; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 14px/1.6 -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 16px 26px 10px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 17px; }
+  header .brief { color: var(--dim); font-size: 13px; margin-top: 4px; max-width: 900px; }
+  #cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 70px); }
+  .col { padding: 20px 26px 40px; overflow-y: auto; }
+  .col.left { border-right: 1px solid var(--line); }
+  .col h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+  .left h2 { color: var(--dim); } .right h2 { color: var(--gold); }
+  .col .sub { font-size: 12px; color: var(--dim); margin-bottom: 14px; }
+  .score { display: flex; flex-direction: column; gap: 5px; margin: 0 0 18px;
+           border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; background: var(--panel); }
+  .score div { display: flex; justify-content: space-between; font-size: 12.5px; }
+  .score .no { color: var(--red); } .score .yes { color: var(--green); }
+  .md { max-width: 640px; }
+  .md h1 { font-size: 18px; margin: 14px 0 8px; }
+  .md h2 { font-size: 15px; margin: 14px 0 6px; text-transform: none; letter-spacing: 0; color: var(--text); }
+  .md h3 { font-size: 13.5px; margin: 12px 0 4px; }
+  .md p, .md li { color: #c6cedb; font-size: 13.5px; margin-bottom: 6px; }
+  .md ul { padding-left: 20px; margin-bottom: 8px; }
+  .md strong { color: var(--text); }
+  .md code { background: #1d2530; border: 1px solid var(--line); border-radius: 4px;
+             padding: 0 5px; font-size: 12px; color: var(--gold); }
+  .right .md code { cursor: default; }
+  footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center;
+           padding: 8px; background: linear-gradient(transparent, var(--bg) 40%);
+           color: var(--dim); font-size: 12.5px; pointer-events: none; }
+  footer b { color: var(--text); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Same model. Same brief. Different memory.</h1>
+  <div class="brief" id="brief">loading brief…</div>
+</header>
+<div id="cols">
+  <div class="col left">
+    <h2>Generic AI</h2>
+    <div class="sub">what any competitor gets from the same prompt</div>
+    <div class="score">
+      <div><span>Cites company precedents</span><span class="no">✗ none</span></div>
+      <div><span>Uses owned research data</span><span class="no">✗ can't</span></div>
+      <div><span>Avoids a known past failure</span><span class="no">✗ unaware</span></div>
+      <div><span>Makes a falsifiable prediction</span><span class="no">✗ no</span></div>
+      <div><span>Learns from the result</span><span class="no">✗ never</span></div>
+    </div>
+    <div class="md" id="generic">loading…</div>
+  </div>
+  <div class="col right">
+    <h2>Company Brain</h2>
+    <div class="sub">same model, equipped with the graph — every claim carries provenance</div>
+    <div class="score">
+      <div><span>Cites company precedents</span><span class="yes">✓ by node id</span></div>
+      <div><span>Uses owned research data</span><span class="yes">✓ survey assets</span></div>
+      <div><span>Avoids a known past failure</span><span class="yes">✓ cited fail case</span></div>
+      <div><span>Makes a falsifiable prediction</span><span class="yes">✓ logged to graph</span></div>
+      <div><span>Learns from the result</span><span class="yes">✓ confidence loop</span></div>
+    </div>
+    <div class="md" id="brain">loading…</div>
+  </div>
+</div>
+<footer>The left answer isn't wrong — it's the answer <b>your competitors also get</b>. Only this company can produce the right one.</footer>
+
+<script>
+// minimal markdown renderer (headers, bold, lists, inline code)
+function md(src) {
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const inline = (s) => s
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  const lines = esc(src).split("\n");
+  let html = "", inList = false;
+  for (const line of lines) {
+    const li = line.match(/^\s*[-*]\s+(.*)/);
+    if (li) { if (!inList) { html += "<ul>"; inList = true; } html += `<li>${inline(li[1])}</li>`; continue; }
+    if (inList) { html += "</ul>"; inList = false; }
+    const h = line.match(/^(#{1,3})\s+(.*)/);
+    if (h) { html += `<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`; continue; }
+    if (line.trim()) html += `<p>${inline(line)}</p>`;
+  }
+  if (inList) html += "</ul>";
+  return html;
+}
+async function load(side, el) {
+  try {
+    const t = await (await fetch(`/demo/${side}`)).text();
+    document.getElementById(el).innerHTML = md(t);
+  } catch { document.getElementById(el).textContent = `demo/${side}.md not found`; }
+}
+load("generic", "generic");
+load("brain", "brain");
+fetch("/demo/brief").then(r => r.text()).then(t => {
+  const line = t.split("\n").find(l => l.trim() && !l.startsWith("#"));
+  document.getElementById("brief").textContent = "Brief: " + (line ?? "").replace(/\*\*/g, "").trim();
+});
+</script>
+</body>
+</html>
