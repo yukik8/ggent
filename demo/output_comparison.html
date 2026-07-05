@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ggent — Output Comparison</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#181b24; --ink:#e8eaf0; --muted:#8b93a7;
+    --left:#6b7280; --right:#10b981; --hl:rgba(16,185,129,.16); --hlborder:#10b981;
+    --rule1:#f59e0b; --rule2:#38bdf8; --rule3:#f472b6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN",sans-serif;padding:32px 40px 80px}
+  header h1{font-size:26px;letter-spacing:.5px}
+  header .sub{color:var(--muted);margin-top:6px;font-size:14px}
+  .brief{background:var(--panel);border:1px solid #262b3a;border-radius:12px;padding:18px 22px;margin:24px 0;display:flex;gap:28px;align-items:baseline;flex-wrap:wrap}
+  .brief b{color:#fbbf24}
+  .brief span{font-size:13.5px;color:var(--muted)}
+  .brief .ask{font-size:15px;color:var(--ink)}
+
+  .skillbox{background:linear-gradient(135deg,#12241d,#181b24);border:1px solid #1f4437;border-radius:12px;padding:18px 22px;margin-bottom:30px}
+  .skillbox h2{font-size:15px;color:var(--right);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+  .rules{display:flex;gap:16px;flex-wrap:wrap}
+  .rule{flex:1;min-width:240px;background:#10131c;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.5}
+  .rule .tag{display:inline-block;font-weight:700;font-size:11px;padding:2px 8px;border-radius:20px;color:#0f1117;margin-bottom:6px}
+  .rule.r1 .tag{background:var(--rule1)} .rule.r2 .tag{background:var(--rule2)} .rule.r3 .tag{background:var(--rule3)}
+  .rule .conf{margin-top:8px;font-size:11px;color:var(--muted)}
+  .bar{height:5px;background:#262b3a;border-radius:3px;margin-top:4px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--right)}
+  .prov{margin-top:10px;font-size:12px;color:var(--muted)}
+  .prov code{color:#9ae6c9;background:#0d1f18;padding:1px 6px;border-radius:4px}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .colhead{font-size:14px;font-weight:700;padding:10px 16px;border-radius:8px;margin-bottom:14px}
+  .colhead small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+  .colhead.before{background:#1c1f2a;border-left:4px solid var(--left)}
+  .colhead.after{background:#0f2b22;border-left:4px solid var(--right)}
+
+  .slide{aspect-ratio:16/9;background:#fff;color:#1a1d26;border-radius:8px;margin-bottom:26px;padding:26px 30px;position:relative;box-shadow:0 8px 24px rgba(0,0,0,.45);overflow:hidden;font-size:13.5px;line-height:1.55}
+  .slide .stitle{font-size:17px;font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:3px solid #d7dbe6}
+  .slide.after-s .stitle{border-color:var(--right)}
+  .slide ul{margin-left:18px}
+  .slide li{margin-bottom:6px}
+  .slide .pagenum{position:absolute;bottom:8px;right:14px;font-size:10px;color:#9aa1b3}
+  .slide .bigidea{font-size:22px;font-weight:800;text-align:center;margin:30px 0 12px;color:#374151}
+  .slide .problem{font-size:15px;font-weight:800;background:#eafaf3;border-left:4px solid var(--right);padding:10px 12px;margin-top:10px}
+  .hl{background:var(--hl);border-bottom:2px solid var(--hlborder);padding:0 2px}
+  .badge{display:inline-block;font-size:9.5px;font-weight:800;color:#0f1117;border-radius:10px;padding:1px 6px;vertical-align:middle;margin-left:4px}
+  .badge.b1{background:var(--rule1)} .badge.b2{background:var(--rule2)} .badge.b3{background:var(--rule3)}
+  .cut{color:#b91c1c;text-decoration:line-through;opacity:.7}
+  .src{font-size:10.5px;color:#6b7280;margin-top:10px;border-top:1px dashed #d7dbe6;padding-top:6px}
+  .verdict{margin-top:34px;background:var(--panel);border:1px solid #262b3a;border-radius:12px;padding:18px 22px;font-size:14px;line-height:1.7}
+  .verdict b{color:var(--right)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Same brief. Two agents. <span style="color:var(--right)">One learned from the ace.</span></h1>
+  <div class="sub">ggent — Company Brain output comparison / input: R7 (LIFT Fitness — a client the system has never seen)</div>
+</header>
+
+<div class="brief">
+  <div class="ask"><b>INPUT&nbsp;»</b> LIFT Fitness (45 × 24h gyms): "Capture New Year resolution demand. 38,000 → 50,000 members. Target: everyone who wants to get in shape." ¥90M, Jan–Mar.</div>
+  <span>Meeting notes: 55% of January joiners cancel by April / referral members stay 2.4× longer / trial→sign-up already converts at 61%</span>
+</div>
+
+<div class="skillbox">
+  <h2>Extracted skill applied on the right: sato-judgment-v1</h2>
+  <div class="rules">
+    <div class="rule r1"><span class="tag">RULE 1</span> <b>Problem-first restructure</b> — never open with the idea. Open with a quantified diagnosis and a one-line problem statement.
+      <div class="conf">confidence 0.92 (holdout: R2, R5)</div><div class="bar"><i style="width:92%"></i></div></div>
+    <div class="rule r2"><span class="tag">RULE 2</span> <b>Evidence discipline</b> — every claim gets a number; unquantified adjectives are deleted; sources cited.
+      <div class="conf">confidence 0.88 (holdout: R2, R5)</div><div class="bar"><i style="width:88%"></i></div></div>
+    <div class="rule r3"><span class="tag">RULE 3</span> <b>Target narrowing</b> — one primary segment with sizing, plus an explicit "who we are NOT targeting" list.
+      <div class="conf">confidence 0.85 (holdout: R2, R5)</div><div class="bar"><i style="width:85%"></i></div></div>
+  </div>
+  <div class="prov">Mined from 6 draft→final diffs by <code>Ayaka Sato</code> across <code>R1 KURO Latte</code> <code>R3 Glide</code> <code>R4 Hana EV</code> <code>R6 Aozora Biz</code> — never written down by her, never spoken in a meeting.</div>
+</div>
+
+<div class="cols">
+  <!-- ======================= LEFT: BASELINE ======================= -->
+  <div>
+    <div class="colhead before">WITHOUT Company Brain<small>generic agent output — reads the brief, does its best</small></div>
+
+    <div class="slide">
+      <div class="stitle">The Big Idea</div>
+      <div class="bigidea">"New Year, New You."</div>
+      <p style="text-align:center">LIFT becomes the symbol of fresh starts. An energetic, inspiring campaign that makes January the month everyone finally joins a gym.</p>
+      <div class="pagenum">1</div>
+    </div>
+
+    <div class="slide">
+      <div class="stitle">Target</div>
+      <ul>
+        <li>Everyone who wants to get in shape, 20–59</li>
+        <li>Resolution makers, busy professionals, students, parents, seniors staying active</li>
+        <li>Fitness is universal — LIFT should be too</li>
+      </ul>
+      <div class="pagenum">2</div>
+    </div>
+
+    <div class="slide">
+      <div class="stitle">Executions</div>
+      <ul>
+        <li>Inspirational 30s TV spot: transformation stories</li>
+        <li>Train &amp; station OOH across all 45 locations' cities</li>
+        <li>Influencer workout challenges (#NewYearNewYou)</li>
+        <li>"No sign-up fee" blast on all channels</li>
+      </ul>
+      <div class="pagenum">3</div>
+    </div>
+
+    <div class="slide">
+      <div class="stitle">Media Plan</div>
+      <ul>
+        <li>Big-bang launch January 1st — all channels simultaneously</li>
+        <li>Maximize reach while resolution motivation is at its peak</li>
+        <li>TV + OOH + digital + influencers at full weight for 6 weeks</li>
+      </ul>
+      <div class="pagenum">4</div>
+    </div>
+
+    <div class="slide">
+      <div class="stitle">Why This Wins</div>
+      <ul>
+        <li>January is the biggest fitness moment of the year</li>
+        <li>The campaign is energetic, emotional and highly shareable</li>
+        <li>Strong reach will surely drive sign-ups toward 50,000 members</li>
+      </ul>
+      <div class="pagenum">5</div>
+    </div>
+  </div>
+
+  <!-- ======================= RIGHT: SKILL-APPLIED ======================= -->
+  <div>
+    <div class="colhead after">WITH Company Brain<small>same agent + <b>sato-judgment-v1</b> — highlights show where the ace's judgment fired</small></div>
+
+    <div class="slide after-s">
+      <div class="stitle">The Problem We Are Solving <span class="badge b1">RULE 1</span></div>
+      <ul>
+        <li><span class="hl">LIFT doesn't have an acquisition problem: trial→sign-up already converts at 61%<span class="badge b2">RULE 2</span></span></li>
+        <li><span class="hl">The bucket leaks after month 1: 55% of January joiners cancel by April</span> — resolution demand churns out faster than ads can pour it in</li>
+        <li><span class="hl">Referral-acquired members stay 2.4× longer</span> — retention is an acquisition-channel choice</li>
+      </ul>
+      <div class="problem">Problem statement: buying resolution demand fills a leaking bucket. Grow through the channel that retains — members bringing members.</div>
+      <div class="pagenum">1</div>
+    </div>
+
+    <div class="slide after-s">
+      <div class="stitle">Target: One Segment, Deliberately Narrow <span class="badge b3">RULE 3</span></div>
+      <ul>
+        <li><b>Primary:</b> <span class="hl">workout partners of current 38,000 members — friends/colleagues 25–39 who already visit as trial guests (est. 1.1 guest visits/member/quarter)<span class="badge b2">RULE 2</span></span></li>
+      </ul>
+      <p style="margin-top:8px"><b><span class="hl">Who we are NOT targeting (and why):</span></b></p>
+      <ul>
+        <li><span class="cut">Resolution impulse joiners 20–59</span> — 55% gone by April; CAC burns with them <span class="badge b3">RULE 3</span></li>
+        <li><span class="cut">Home-workout converts</span> — structurally price-anchored at ¥0; converting them needs discounting LIFT refused</li>
+      </ul>
+      <div class="pagenum">2</div>
+    </div>
+
+    <div class="slide after-s">
+      <div class="stitle">Strategy &amp; Executions</div>
+      <ul>
+        <li>Message: <b>"Your gym buddy already trains here."</b> — referral as the product, January as the excuse</li>
+        <li>Member referral kit: bring-a-friend passes (3 visits), both sides get month 2 free — <span class="hl">mechanic targets the 2.4× retention channel</span></li>
+        <li>"New Year, New You" imagery kept — <span class="hl">demoted to creative wrapper, not the strategy<span class="badge b1">RULE 1</span></span></li>
+      </ul>
+      <div class="pagenum">3</div>
+    </div>
+
+    <div class="slide after-s">
+      <div class="stitle">Media Plan: Sequenced, Gated <span class="badge b1">RULE 1</span></div>
+      <ul>
+        <li><b>Weeks 1–3:</b> in-gym + CRM referral activation to 38,000 members (owned, ~¥0 media)</li>
+        <li><b>Weeks 4–8:</b> geo-targeted digital within 1.5km of the 45 gyms, referral-led creative</li>
+        <li><b><span class="hl">Broad awareness only if month-2 retention of new joiners clears 70%</span></b> <span class="badge b2">RULE 2</span></li>
+      </ul>
+      <div class="pagenum">4</div>
+    </div>
+
+    <div class="slide after-s">
+      <div class="stitle">KPIs &amp; Sources <span class="badge b2">RULE 2</span></div>
+      <ul>
+        <li>Net new members: <span class="hl">+12,000 by March, ≥55% via referral channel</span></li>
+        <li><span class="hl">April survival of Q1 joiners: 45% → 65%</span></li>
+        <li>CAC: <span class="hl">≤¥7,500 blended (vs est. ¥14,000 for pure paid acquisition)</span></li>
+      </ul>
+      <div class="src">Sources: LIFT internal churn cohort data (Jan–Apr) / LIFT referral-tenure analysis / Fitness Membership Retention Benchmarks 2025
+      <br>Judgment provenance: rules mined from R1/R3/R4/R6 draft→final diffs by A. Sato — e.g. <b>R3 Glide</b>: "fix the leak before acquisition" (won, ¥120M) ; validated on holdout R2/R5, agreement 0.85–0.92</div>
+      <div class="pagenum">5</div>
+    </div>
+  </div>
+</div>
+
+<div class="verdict">
+  <b>What just happened:</b> the left agent answered the brief. The right agent answered the brief <b>the way the company's best strategist would</b> — it opened with a quantified diagnosis instead of an idea (Rule 1), it refused to chase the client's "everyone" target and logged what it dropped (Rule 3), it put a number on every claim and gated the media spend (Rule 2). None of these rules exist in any document. They were mined from the diffs between junior drafts and Ayaka Sato's revisions — and validated against held-out revisions she actually made.
+</div>
+
+</body>
+</html>
