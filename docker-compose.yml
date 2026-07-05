@@ -1,14 +1,11 @@
 services:
   memgraph:
-    image: memgraph/memgraph-platform:2.18.0
+    image: memgraph/memgraph-platform:latest
     ports:
       - "7687:7687"
       - "3000:3000"
     volumes:
       - mg_data:/var/lib/memgraph
-    environment:
-      MEMGRAPH_USER: ""
-      MEMGRAPH_PASSWORD: ""
     healthcheck:
       test: ["CMD", "mgconsole", "--host", "0.0.0.0", "--port", "7687", "-e", "RETURN 1"]
       interval: 5s
@@ -21,17 +18,9 @@ services:
       - "50051:50051"
     environment:
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
-      DEFAULT_VECTORIZER_MODULE: text2vec-transformers
-      ENABLE_MODULES: text2vec-transformers
-      TRANSFORMERS_INFERENCE_API: http://t2v-transformers:8080
+      DEFAULT_VECTORIZER_MODULE: none
       CLUSTER_HOSTNAME: node1
-    depends_on:
-      - t2v-transformers
-
-  t2v-transformers:
-    image: semitechnologies/transformers-inference:sentence-transformers-all-MiniLM-L6-v2
-    environment:
-      ENABLE_CUDA: "0"
+      CLUSTER_ADVERTISE_ADDR: "127.0.0.1"
 
 volumes:
   mg_data:
