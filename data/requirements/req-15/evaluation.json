@@ -5,7 +5,5 @@
   "payment": false,
   "campaignEffect": null,
   "decisionDate": "2026-08-24",
-  "lossReason": "content",
-  "lossReasonDetail": "proposal-quality",
-  "clientFeedback": "Tom said the creative felt fun but the proposal never made the case for who the rail-and-trail visitor is or what fills October rooms; the claims about short-form video were asserted, not evidenced. The board chose a data-heavier plan."
+  "reason": "Client said the plan was enthusiastic but vague, with no evidence behind its claims."
 }

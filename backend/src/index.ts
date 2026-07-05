@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { readFileSync } from "node:fs";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "@hono/node-server";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
@@ -9,6 +10,8 @@ import { vectorSearch } from "./db/weaviate";
 import ingestRoutes from "./routes/ingest";
 
 const app = new Hono();
+
+app.use("/*", cors());
 
 app.route("/ingest", ingestRoutes);
 
@@ -53,6 +56,45 @@ app.post("/vector-search", zValidator("json", VectorBody), async (c) => {
 });
 
 app.get("/health", (c) => c.json({ ok: true }));
+
+app.get("/ontology/status", async (c) => {
+	try {
+		const oRes = await runQuery(
+			"MATCH (o:OntologyVersion) RETURN o ORDER BY o.generatedAt DESC LIMIT 1",
+		);
+		if (oRes.records.length === 0) {
+			return c.json({ exists: false });
+		}
+		const obj = oRes.records[0].toObject();
+		const node = (obj.o ?? obj) as Record<string, unknown>;
+		const props = (node.properties ?? node) as Record<string, unknown>;
+		const version = (props.version as string) ?? "";
+
+		const [lRes, eRes] = await Promise.all([
+			runQuery(
+				`MATCH (:OntologyVersion {version: "${version}"})-[:DEFINES_LABEL]->(l:Label) RETURN count(l) AS c`,
+			),
+			runQuery(
+				`MATCH (:OntologyVersion {version: "${version}"})-[:DEFINES_EDGE]->(e:EdgeType) RETURN count(e) AS c`,
+			),
+		]);
+
+		const toNum = (v: unknown) =>
+			typeof v === "number" ? v : (v as { toNumber?: () => number })?.toNumber?.() ?? 0;
+
+		return c.json({
+			exists: true,
+			version,
+			description: props.description as string,
+			questions: props.questions as string[],
+			generatedAt: props.generatedAt as string,
+			labelCount: toNum(lRes.records[0]?.get("c")),
+			edgeCount: toNum(eRes.records[0]?.get("c")),
+		});
+	} catch {
+		return c.json({ exists: false }, 200);
+	}
+});
 
 const port = Number(process.env.PORT) || 3001;
 serve({ fetch: app.fetch, port }, (info) => {

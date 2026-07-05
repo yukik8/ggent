@@ -5,7 +5,5 @@
   "payment": false,
   "campaignEffect": null,
   "decisionDate": "2026-01-27",
-  "lossReason": "price",
-  "lossReasonDetail": "unrelated-to-content",
-  "clientFeedback": "Nadia told us the strategy was the strongest in the review and the problem framing around first-order churn was exactly right, but the incumbent retail-marketing agency bundled discounted placement fees with the national beauty chains and procurement took the cheaper package."
+  "reason": "Client scaled back the specialty-retail entry for budget reasons and took a reduced plan in-house."
 }

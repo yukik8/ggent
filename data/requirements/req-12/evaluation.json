@@ -5,6 +5,5 @@
   "payment": true,
   "campaignEffect": "Subscription sign-ups from the existing buyer file exceeded target, lifting second-purchase rate among first-time buyers over the campaign window.",
   "decisionDate": "2026-05-12",
-  "winAttribution": "relationship",
-  "clientFeedback": "Nadia was candid that the proposal itself was middle-of-the-pack, but the team already runs the moisturizer franchise account, the data integration was already in place, and switching agencies for a retention program wasn't worth the friction."
+  "reason": "Incumbent relationship carried the decision."
 }

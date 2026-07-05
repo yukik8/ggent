@@ -1,10 +1,10 @@
 # ggent — the company brain
 
-A brain that turns the "ace's judgment" behind winning sales proposals into a
-graph asset owned by the organization. It accumulates past requirements,
-presentations, and outcomes in a graph, distills winning patterns
-(**Judgments**) from success and failure, and uses them to plan strategy for
-new deals.
+An organization's learnable graph memory. It turns the "ace's judgment"
+behind winning sales proposals into a graph asset owned by the organization:
+it ingests past requirements, presentations, and outcomes, distills winning
+patterns (**Judgments**) from success and failure, and uses them to plan
+strategy for new deals — so the next pitch is smarter.
 
 ## Concept
 
@@ -80,6 +80,23 @@ recorded reason is unrelated to the content of the materials (price,
 relationships, timing), that Outcome is **excluded as evidence** for any
 Judgment. The brain only claims what its evidence can support.
 
+## What makes this different
+
+**Self-evolving ontology.** The backend's LLM agent doesn't just populate a
+fixed schema — it can *extend* the ontology at runtime. It starts from a
+small labeled base, discovers new entity types from ingested documents via an
+`add_label` tool, and tracks ontology versions in the graph itself. Humans
+don't model the domain; the domain *emerges* from ingestion.
+
+**Graph + vector dual RAG.** Every searchable node is written to both
+Memgraph (structure traversal and provenance) and Weaviate (semantic
+similarity). A shared `gid` bridges the two. Cypher walks the graph for
+precedent chains; vector search finds semantically close Judgments. Results
+are merged by confidence score — structure and meaning, together.
+
+**Provenance chains are the output.** Every recommendation cites a traceable
+chain of node ids back to the evidence that produced it. No black box.
+
 ## Architecture
 
 ```
@@ -97,19 +114,21 @@ Judgment. The brain only claims what its evidence can support.
 The backend is a thin proxy. Intelligence lives in the **skill layer** —
 Claude Code skills that read and write the graph through the backend.
 
-### Stores
+### Stack
 
-- **Memgraph** — the graph itself: structure and provenance. Every node,
-  edge, and confidence score lives here.
-- **Weaviate** — semantic search over text-bearing nodes, used to find
-  connection candidates. Each object carries a `gid` bridging a search hit
-  back to graph traversal (dual-write rule).
+| layer | tech |
+|---|---|
+| graph db | Memgraph (Bolt, Cypher) |
+| vector db | Weaviate (text2vec-openai) |
+| backend | Hono + LangChain + DeepSeek |
+| frontend | SvelteKit + Cytoscape |
+| orchestration | Claude Code skills (`.claude/skills/`) |
 
 ### Skill pipeline
 
 | skill | role | invoked by |
 |---|---|---|
-| `/ace-review` | strategy planning (main entry). Produces a cited strategy brief + slide skeleton + upfront prediction | human. Calls brain-connect internally if the deal isn't in the graph |
+| `/ace-review` | strategy planning (main entry). Produces a cited strategy brief + slide deck + upfront prediction | human. Calls brain-connect internally if the deal isn't in the graph |
 | `/brain-connect` | ingest a requirement, decompose into attributes, connect to existing nodes | ace-review, or standalone |
 | `/brain-record` | record a result (success/fail) and its reason | human. Calls brain-learn internally |
 | `/brain-learn` | extract Judgments, update confidence. `--full-scan` for a global pass | brain-record, or standalone |
@@ -145,18 +164,29 @@ Judgment lifecycle (managed by `/brain-learn`):
 ## Getting started
 
 ```bash
-docker compose up -d          # memgraph + weaviate (put OPENAI_API_KEY in .env)
-npm run dev -w backend        # API on :3001
+# Infrastructure (Memgraph + Weaviate)
+docker compose up -d
+
+# Backend (Hono, :3001)
+npm run dev -w backend
+
+# Frontend (SvelteKit)
+npm run dev -w frontend
 ```
+
+Requires `OPENAI_API_KEY` (and `DEEPSEEK_API_KEY` for the ingestion agent)
+in `.env`.
 
 Demo endpoints once the backend is up:
 
 - `http://localhost:3001/ui` — live graph view
 - `http://localhost:3001/compare` — brain-backed vs. generic-AI proposal, side by side
-- `http://localhost:3001/slides` — slide skeleton output
+- `http://localhost:3001/slides` — slide deck output
 - `http://localhost:3000` — Memgraph Lab (raw graph)
 
-Seed data with planted winning patterns lives in [`seed/`](seed/).
+Seed data with planted winning patterns lives in [`seed/`](seed/); the full
+dummy world (145 requirements with briefs and evaluations) lives in
+[`data/`](data/).
 
 ## Dev notes
 

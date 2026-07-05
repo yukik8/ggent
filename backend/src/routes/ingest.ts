@@ -44,8 +44,10 @@ function parseQuestions(raw: unknown): string[] | undefined {
 
 ingest.post("/initial", async (c) => {
   const body = await c.req.parseBody({ all: true });
-  const paths = await saveUploadedFiles(body as Record<string, unknown>);
-  const questions = parseQuestions((body as Record<string, unknown>).competenceQuestions);
+  const rawBody = body as Record<string, unknown>;
+  const paths = await saveUploadedFiles(rawBody);
+  const rawQs = rawBody.competenceQuestions ?? rawBody.questions;
+  const questions = parseQuestions(rawQs);
   try {
     // No files = synthesize a seed dataset against the BASE ontology.
     const result = await initialIngestFiles(paths, questions);
@@ -58,6 +60,29 @@ ingest.post("/initial", async (c) => {
 });
 
 ingest.post("/append", async (c) => {
+  const ct = c.req.header("content-type") ?? "";
+  const isJson = ct.includes("application/json");
+
+  if (isJson) {
+    const body = await c.req.json().catch(() => ({}));
+    const raw = (body as Record<string, unknown>).raw as
+      | { note: string; presenterId?: string }
+      | undefined;
+    if (!raw || typeof raw.note !== "string" || !raw.note.trim()) {
+      return c.json({ error: "Provide {raw: {note, presenterId?}}." }, 400);
+    }
+    const tempPath = path.join(os.tmpdir(), `ggent-raw-${Date.now()}.txt`);
+    await fs.writeFile(tempPath, raw.note, "utf8");
+    try {
+      const result = await appendIngestFiles([tempPath]);
+      return c.json(result);
+    } catch (err) {
+      return c.json({ error: (err as Error).message }, 500);
+    } finally {
+      await fs.unlink(tempPath).catch(() => {});
+    }
+  }
+
   const body = await c.req.parseBody({ all: true });
   const paths = await saveUploadedFiles(body as Record<string, unknown>);
   if (paths.length === 0) {
