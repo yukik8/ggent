@@ -1,0 +1,5 @@
+{
+  "name": "ggent",
+  "private": true,
+  "workspaces": ["backend"]
+}
