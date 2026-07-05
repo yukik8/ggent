@@ -4,118 +4,140 @@
 <meta charset="utf-8" />
 <title>ggent — generated deck</title>
 <style>
-  :root { --bg:#0e1116; --panel:#161b23; --line:#2a3240; --text:#dbe2ec; --dim:#8a94a6; --gold:#f5c542; }
-  * { box-sizing: border-box; margin: 0; }
-  body { background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
-  #stage { display: flex; height: 100vh; }
-  #slide { flex: 1; display: flex; flex-direction: column; justify-content: center;
-           padding: 7vh 8vw; cursor: pointer; position: relative; }
-  #deckTitle { position: absolute; top: 22px; left: 8vw; color: var(--dim); font-size: 13px; letter-spacing: .05em; }
-  #slideNo { position: absolute; top: 22px; right: 8vw; color: var(--dim); font-size: 13px; }
-  #slide h1 { font-size: clamp(28px, 4.5vw, 52px); line-height: 1.15; margin-bottom: 4vh; }
-  #slide ul { list-style: none; }
-  #slide li { font-size: clamp(17px, 1.9vw, 26px); color: #c6cedb; margin-bottom: 2.4vh;
-              padding-left: 28px; position: relative; }
-  #slide li::before { content: "—"; position: absolute; left: 0; color: var(--gold); }
-  #visual { margin-top: 4vh; color: var(--dim); font-size: 14px; border: 1px dashed var(--line);
-            border-radius: 8px; padding: 10px 16px; display: inline-block; }
-  #dots { position: absolute; bottom: 24px; left: 8vw; display: flex; gap: 8px; }
-  .dotn { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-  .dotn.on { background: var(--gold); }
+  :root {
+    --paper:#f6f1e6; --ink:#232820; --matcha:#31543c; --deep:#1d3527;
+    --gold:#a8892f; --stone:#8d8674;
+    --serif:"Iowan Old Style","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+    --sans:-apple-system,"Hiragino Sans","Segoe UI",sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--paper); color:var(--ink); font:16px/1.6 var(--sans); overflow:hidden; }
+  #stage { display:flex; height:100vh; }
+  #slide { flex:1; position:relative; cursor:pointer; overflow:hidden; }
+
+  /* vertical kicker — the signature, set like a tea canister label */
+  .kicker { position:absolute; top:0; left:56px; writing-mode:vertical-rl;
+    font:600 13px/1 var(--sans); letter-spacing:.42em; text-transform:uppercase;
+    color:var(--paper); background:var(--matcha); padding:26px 10px 34px; }
+  .kicker::after { content:""; position:absolute; left:0; right:0; bottom:-10px;
+    height:10px; background:var(--gold); }
+
+  .body { position:absolute; inset:0; padding:14vh 9vw 12vh 170px;
+    display:flex; flex-direction:column; justify-content:center; }
+  .statement { font:400 clamp(40px,5.6vw,84px)/1.12 var(--serif); letter-spacing:-.01em; max-width:12em; }
+  .support { margin-top:3.5vh; max-width:34em; font-size:clamp(14px,1.25vw,17px);
+    color:#4c5244; border-left:2px solid var(--gold); padding-left:16px; }
+
+  /* stat layout */
+  .stats { display:flex; gap:5vw; margin-top:5vh; align-items:flex-end; }
+  .stat .v { font:400 clamp(48px,7vw,110px)/1 var(--serif); color:var(--matcha); }
+  .stat .l { margin-top:10px; font-size:13px; letter-spacing:.05em; color:var(--stone);
+    max-width:13em; border-top:1px solid var(--stone); padding-top:8px; }
+
+  /* persona layout */
+  .traits { margin-top:4vh; max-width:30em; }
+  .traits div { font-size:clamp(15px,1.5vw,20px); padding:14px 0; border-bottom:1px solid #d8d0bc; }
+  .traits div::before { content:"— "; color:var(--gold); }
+
+  /* storyboard layout */
+  .frames { display:flex; gap:18px; margin-top:5vh; }
+  .frame { flex:1; aspect-ratio:4/3; background:var(--deep); border-radius:3px;
+    position:relative; display:flex; align-items:flex-end; }
+  .frame span { color:#e9e4d2; font-size:12.5px; line-height:1.45; padding:12px; }
+  .frame::before { content:attr(data-n); position:absolute; top:10px; left:12px;
+    font:400 15px var(--serif); color:var(--gold); }
+  .frame img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:3px; }
+
+  /* closer (risks) — inverted bookend */
+  .closer { background:var(--deep); }
+  .closer .statement { color:var(--paper); }
+  .riskrow { max-width:46em; margin-top:3.2vh; display:grid; grid-template-columns:190px 1fr; gap:18px; }
+  .riskrow .fid { font:12px ui-monospace,monospace; color:var(--gold); padding-top:3px; word-break:break-all; }
+  .riskrow .lesson { color:#d9d4c2; font-size:clamp(13.5px,1.3vw,16.5px); }
+  .pred { margin-top:5vh; max-width:46em; border-top:1px solid #3d5a47; padding-top:2.4vh; }
+  .pred .lbl { font:600 11px var(--sans); letter-spacing:.3em; text-transform:uppercase; color:var(--gold); }
+  .pred p { color:#c9c4b2; font-size:13.5px; margin-top:8px; }
+
+  /* chrome */
+  #deckTitle { position:absolute; top:26px; right:9vw; font:400 13px var(--serif);
+    font-style:italic; color:var(--stone); }
+  #dots { position:absolute; bottom:30px; left:170px; display:flex; gap:9px; }
+  .dotn { width:7px; height:7px; border-radius:50%; background:#d3cab2; }
+  .dotn.on { background:var(--gold); }
+  .closer #dots .dotn { background:#3d5a47; } .closer #dots .dotn.on { background:var(--gold); }
+
   /* evidence rail */
-  #rail { width: 330px; background: var(--panel); border-left: 1px solid var(--line);
-          padding: 22px 20px; overflow-y: auto; transition: margin-right .25s; }
-  #rail.hidden { margin-right: -330px; }
-  #rail h2 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
-  .ev { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
-  .ev .id { font-family: ui-monospace, monospace; font-size: 12px; color: var(--gold); }
-  .ev .why { font-size: 12.5px; color: var(--dim); margin-top: 4px; }
-  .ev .confbar { height: 5px; border-radius: 3px; background: var(--gold); margin-top: 7px; }
-  #hint { position: fixed; bottom: 20px; right: 24px; color: var(--dim); font-size: 12px; }
-  .pill { background: #1d2530; border: 1px solid var(--line); border-radius: 20px; padding: 1px 9px; font-size: 11px; }
-  /* risks slide */
-  .riskcard { border: 1px solid #5a3030; background: #1d1416; border-radius: 10px;
-              padding: 16px 20px; margin-bottom: 16px; max-width: 720px; }
-  .riskcard .fid { font-family: ui-monospace, monospace; font-size: 13px; color: #e05555; }
-  .riskcard .lesson { font-size: clamp(15px, 1.6vw, 20px); margin-top: 6px; color: #c6cedb; }
-  .predcard { border: 1px solid var(--line); background: var(--panel); border-radius: 10px;
-              padding: 16px 20px; max-width: 720px; margin-top: 3vh; }
-  .predcard .lbl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
-  .predcard p { font-size: 14.5px; color: #c6cedb; margin-top: 6px; }
+  #rail { width:320px; background:#efe8d8; border-left:1px solid #ddd3bc;
+    padding:24px 20px; overflow-y:auto; transition:margin-right .25s; font-family:var(--sans); }
+  #rail.hidden { margin-right:-320px; }
+  #rail h2 { font:600 11px var(--sans); letter-spacing:.3em; text-transform:uppercase;
+    color:var(--matcha); margin-bottom:14px; }
+  .ev { border-bottom:1px solid #ddd3bc; padding:12px 0; }
+  .ev .id { font:12px ui-monospace,monospace; color:var(--matcha); word-break:break-all; }
+  .ev .why { font-size:12.5px; color:#6b6453; margin-top:4px; }
+  .ev .confbar { height:4px; background:var(--gold); margin-top:8px; }
+  #hint { position:fixed; bottom:12px; right:20px; color:var(--stone); font-size:11.5px; font-family:var(--sans); }
 </style>
 </head>
 <body>
 <div id="stage">
   <div id="slide">
+    <div class="kicker" id="kicker"></div>
     <div id="deckTitle"></div>
-    <div id="slideNo"></div>
-    <div id="content"></div>
+    <div class="body" id="content"></div>
     <div id="dots"></div>
   </div>
   <div id="rail"><h2>Why this slide</h2><div id="evList"></div></div>
 </div>
-<div id="hint"><span class="pill">←→ / click</span> navigate <span class="pill">e</span> evidence rail <span class="pill">r</span> reload</div>
-
+<div id="hint">←→ navigate · e evidence · r reload</div>
 <script>
-let deck = null, idx = 0;
-
-async function load() {
-  deck = await (await fetch("/demo/slides")).json();
-  idx = Math.min(idx, deck.slides.length); // keep position on reload
-  render();
+let deck=null, idx=0;
+const DECK_SRC = new URLSearchParams(location.search).get("deck")==="generic" ? "/demo/slides-generic" : "/demo/slides";
+async function load(){ deck=await (await fetch(DECK_SRC)).json(); applyTheme(); render(); }
+function applyTheme(){
+  const p=deck.design?.palette; if(!p) return;
+  const map={paper:"--paper",ink:"--ink",matcha:"--matcha",deep:"--deep",gold:"--gold",stone:"--stone"};
+  for(const k in map) if(p[k]) document.documentElement.style.setProperty(map[k],p[k]);
 }
-
-function render() {
-  const total = deck.slides.length + 1; // + risks/prediction closer
-  document.getElementById("deckTitle").textContent = deck.deck_title;
-  document.getElementById("slideNo").textContent = `${idx + 1} / ${total}`;
-  document.getElementById("dots").innerHTML =
-    Array.from({ length: total }, (_, i) => `<div class="dotn ${i === idx ? "on" : ""}"></div>`).join("");
-
-  const c = document.getElementById("content");
-  const ev = document.getElementById("evList");
-
-  if (idx < deck.slides.length) {
-    const s = deck.slides[idx];
-    c.innerHTML = `<h1>${s.title}</h1>
-      <ul>${s.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>
-      ${s.visual_hint ? `<div id="visual">visual: ${s.visual_hint}</div>` : ""}`;
-    ev.innerHTML = (s.evidence ?? []).map((e) => `
-      <div class="ev">
-        <div class="id">${e.id}</div>
-        <div class="why">${e.why ?? ""}</div>
-        ${e.confidence != null ? `<div class="confbar" style="width:${e.confidence * 100}%"></div>` : ""}
-      </div>`).join("") || `<div class="ev"><div class="why">no citations</div></div>`;
+function ev(list){
+  document.getElementById("evList").innerHTML=(list??[]).map(e=>`
+    <div class="ev"><div class="id">${e.id}</div><div class="why">${e.why??""}</div>
+    ${e.confidence!=null?`<div class="confbar" style="width:${e.confidence*100}%"></div>`:""}</div>`).join("")
+    || '<div class="ev"><div class="why">no citations</div></div>';
+}
+function render(){
+  const total=deck.slides.length+1;
+  const sl=document.getElementById("slide");
+  document.getElementById("deckTitle").textContent=deck.deck_title;
+  document.getElementById("dots").innerHTML=Array.from({length:total},(_,i)=>`<div class="dotn ${i===idx?"on":""}"></div>`).join("");
+  const c=document.getElementById("content");
+  sl.classList.toggle("closer", idx>=deck.slides.length);
+  if(idx<deck.slides.length){
+    const s=deck.slides[idx];
+    document.getElementById("kicker").textContent=s.kicker??s.title??"";
+    let mid="";
+    if(s.layout==="stat") mid=`<div class="stats">${s.stats.map(t=>`<div class="stat"><div class="v">${t.value}</div><div class="l">${t.label}</div></div>`).join("")}</div>`;
+    else if(s.layout==="persona") mid=`<div class="traits">${s.persona.map(t=>`<div>${t}</div>`).join("")}</div>`;
+    else if(s.layout==="storyboard") mid=`<div class="frames">${s.frames.map((f,i)=>`<div class="frame" data-n="${i+1}">${f.image?`<img src="${f.image}">`:""}<span>${f.caption}</span></div>`).join("")}</div>`;
+    else if(s.bullets) mid=`<div class="traits">${s.bullets.map(b=>`<div>${b}</div>`).join("")}</div>`;
+    c.innerHTML=`<div class="statement">${s.statement??s.title}</div>${mid}${s.support?`<div class="support">${s.support}</div>`:""}`;
+    ev(s.evidence);
   } else {
-    // closer: risks designed around + the logged prediction
-    c.innerHTML = `<h1>Risks we designed around</h1>
-      ${(deck.avoided_risks ?? []).map((r) => `
-        <div class="riskcard">
-          <div class="fid">${r.fail_case}</div>
-          <div class="lesson">${r.lesson}</div>
-        </div>`).join("")}
-      ${deck.prediction ? `
-        <div class="predcard">
-          <div class="lbl">Prediction logged to the brain — ${deck.prediction.id}</div>
-          <p><strong>expects:</strong> ${deck.prediction.expects}</p>
-          <p><strong>risks:</strong> ${deck.prediction.risks}</p>
-        </div>` : ""}`;
-    ev.innerHTML = `<div class="ev"><div class="why">Every card cites a real fail node in the graph.
-      When this pitch's result lands, the prediction is scored and the brain updates itself.</div></div>`;
+    document.getElementById("kicker").textContent="Designed Around";
+    c.innerHTML=`<div class="statement">Risks we designed around</div>
+      ${(deck.avoided_risks??[]).map(r=>`<div class="riskrow"><div class="fid">${r.fail_case}</div><div class="lesson">${r.lesson}</div></div>`).join("")}
+      ${deck.prediction?`<div class="pred"><div class="lbl">Prediction logged — ${deck.prediction.id}</div>
+        <p><strong>expects</strong> ${deck.prediction.expects}</p><p><strong>risks</strong> ${deck.prediction.risks}</p></div>`:""}`;
+    ev([{id:deck.prediction?.id??"—", why:"Every card cites a real fail node. When the result lands, this prediction is scored and the brain updates itself."}]);
   }
 }
-
-function nav(d) {
-  if (!deck) return;
-  idx = Math.max(0, Math.min(deck.slides.length, idx + d));
-  render();
-}
-document.getElementById("slide").addEventListener("click", () => nav(1));
-window.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowRight" || e.key === " ") nav(1);
-  if (e.key === "ArrowLeft") nav(-1);
-  if (e.key === "e") document.getElementById("rail").classList.toggle("hidden");
-  if (e.key === "r") load();
+function nav(d){ if(!deck) return; idx=Math.max(0,Math.min(deck.slides.length,idx+d)); render(); }
+document.getElementById("slide").addEventListener("click",()=>nav(1));
+window.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" ") nav(1);
+  if(e.key==="ArrowLeft") nav(-1);
+  if(e.key==="e") document.getElementById("rail").classList.toggle("hidden");
+  if(e.key==="r") load();
 });
 load();
 </script>

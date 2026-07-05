@@ -1,60 +1,163 @@
 {
   "deck_title": "Hoshino Premium Bottled Matcha — Launch Proposal",
   "client": "Hoshino Beverage",
-  "generated_by": "placeholder — replace by running /ace-review",
+  "generated_by": "ace-review 2026-07-05 (graph: 4 active judgments, 4 precedents via shared attributes, 1 same-client win)",
+  "design": {
+    "concept": "washi + stone-milled matcha: the deck borrows its look from premium tea packaging — unbleached paper, deep green, a thin gold seam",
+    "palette": {
+      "paper": "#f6f1e6",
+      "ink": "#232820",
+      "matcha": "#31543c",
+      "deep": "#1d3527",
+      "gold": "#a8892f",
+      "stone": "#8d8674"
+    },
+    "signature": "vertical kicker labels set like the side of a tea canister, with a single gold rule under each statement"
+  },
   "slides": [
     {
       "n": 1,
-      "title": "The Insight",
-      "bullets": [
-        "Affluent women in their 50s don't buy tea for thrift — they buy a shared health ritual.",
-        "One persona, one habit moment: the 3pm reset she shares with her husband."
-      ],
-      "visual_hint": "single persona photo, one stat overlay",
+      "layout": "hero",
+      "kicker": "The Insight",
+      "statement": "A ritual, not a trend.",
+      "support": "Affluent women in their 50s don't buy premium tea to follow wellness fashion — they buy a daily ritual, often shared with a spouse. This exact framing won our last Hoshino pitch.",
       "evidence": [
-        { "id": "jdg-insight-first", "confidence": 0.8, "why": "insight-first structure wins (3 supporting outcomes)" },
-        { "id": "pres-hoshino-2026-02-final", "why": "same client, same segment — the ritual framing won last time" }
+        {
+          "id": "jdg-insight-first",
+          "confidence": 0.6,
+          "why": "lead with the audience insight, features after — 3 supporting outcomes, 1 contradiction (see risk slide)"
+        },
+        {
+          "id": "pres-hoshino-2026-02-final",
+          "why": "same client, same segment: the ritual story beat two competitors who led with product specs (out-hoshino-2026-02)"
+        }
       ]
     },
     {
       "n": 2,
-      "title": "The Audience, In Their Own Data",
-      "bullets": [
-        "TV 58% daily reach; TikTok 41% via family (F50 media habits survey, Mar 2026).",
-        "Expert endorsement drives trust in this segment."
+      "layout": "stat",
+      "kicker": "Her Media Day",
+      "statement": "TV is where she already is.",
+      "stats": [
+        {
+          "value": "58%",
+          "label": "of F50 watch TV daily"
+        },
+        {
+          "value": "41%",
+          "label": "reach TikTok — through family phones"
+        },
+        {
+          "value": "n=500",
+          "label": "F50 media habits survey, Mar 2026 (in-house)"
+        }
       ],
-      "visual_hint": "two big numbers from the survey",
+      "support": "TV leads; a family-mediated short-form cutdown extends reach. Expert endorsement is this segment's trust lever — the spot carries a tea-master's voice.",
       "evidence": [
-        { "id": "data-survey-f50-media", "why": "owned research, directly applicable" },
-        { "id": "jdg-survey-backed", "confidence": 0.7, "why": "survey-backed decks win" }
+        {
+          "id": "data-survey-f50-media",
+          "why": "owned research on exactly this segment; also backed the winning Hoshino Feb deck"
+        },
+        {
+          "id": "jdg-survey-backed",
+          "confidence": 0.95,
+          "why": "survey-grounded decks: 5 supporting outcomes, zero contradictions — the brain's strongest rule"
+        }
       ]
     },
     {
       "n": 3,
-      "title": "Creative Direction",
-      "bullets": [
-        "30s TV spot anchored on the shared ritual moment, expert voice-over.",
-        "Premium cue: craftsmanship, not price."
+      "layout": "persona",
+      "kicker": "One Persona",
+      "statement": "Keiko, 56.",
+      "persona": [
+        "Household income 8M+ — she curates, she doesn't economize",
+        "Keeps the family's health routines; her 3pm tea is the day's quiet reset",
+        "Trusts craft and expertise, not influencers",
+        "Premium is self-reward — permission she grants herself"
       ],
-      "visual_hint": "storyboard frames",
+      "support": "Deliberately NOT a 'women 40–60 wellness' umbrella. One narrow persona, one habit moment.",
       "evidence": [
-        { "id": "pres-aeonmart-2026-01-final", "why": "self-reward framing succeeded with the same segment" }
+        {
+          "id": "jdg-narrow-persona",
+          "confidence": 0.7,
+          "why": "broad 'everyone' targets read as generic and lose (supported by out-hoshino-2026-02, out-fittech-2026-04)"
+        },
+        {
+          "id": "pres-aeonmart-2026-01-final",
+          "why": "'affluent F50 buy premium as self-reward, not thrift' — the insight that won with the identical segment (out-aeonmart-2026-01)"
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "layout": "storyboard",
+      "kicker": "The 30-Second Spot",
+      "statement": "The shared cup.",
+      "frames": [
+        {
+          "caption": "3pm. Kitchen light. A kettle hums — no voiceover yet."
+        },
+        {
+          "caption": "Two cups set down on the counter. Her husband looks up."
+        },
+        {
+          "caption": "The pour, slowed. The green blooms — the pause IS the product."
+        },
+        {
+          "caption": "Tea-master's voice over the craft close: stone-milled, single-origin. Bottle reveal, gold seam."
+        }
+      ],
+      "support": "Premium justified through craft and ritual, never through price. Product facts (origin, umami, zero sugar) arrive only after the story.",
+      "evidence": [
+        {
+          "id": "pres-hoshino-2026-02-final",
+          "why": "ritual-anchored TV creative is this client's proven pattern"
+        },
+        {
+          "id": "jdg-insight-first",
+          "confidence": 0.6,
+          "why": "story first, specs after — the structure that beat spec-led competitors"
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "layout": "generic",
+      "kicker": "Why We Win",
+      "statement": "Every choice here has a receipt.",
+      "bullets": [
+        "Same-client proof: the Feb 2026 sugar-free tea launch won with this exact ritual framing (pres-hoshino-2026-02-final)",
+        "Segment proof: self-reward insight won with identical affluent-F50 audience at AeonMart (pres-aeonmart-2026-01-final)",
+        "Data-grounded: every media claim traces to our n=500 F50 survey (data-survey-f50-media)",
+        "Pre-mortem done: we checked our three known loss modes before writing a single frame"
+      ],
+      "evidence": [
+        {
+          "id": "jdg-survey-backed",
+          "confidence": 0.95,
+          "why": "the provenance chain is the pitch"
+        }
       ]
     }
   ],
   "avoided_risks": [
     {
-      "fail_case": "out-fittech-2026-04",
-      "lesson": "Broad targeting reads as generic — we commit to ONE persona."
+      "fail_case": "out-sakura-2026-06",
+      "lesson": "An insight that contradicts the client's own consumer research kills the pitch. Action: validate the ritual/self-reward insight against Hoshino's in-house data BEFORE the presentation."
     },
     {
-      "fail_case": "out-sakura-2026-06",
-      "lesson": "Insight must match the client's own research — validated against Hoshino's brief before slide 1."
+      "fail_case": "out-fittech-2026-04",
+      "lesson": "Broad targeting reads as generic. We locked ONE persona (Keiko, 56) before any creative work."
+    },
+    {
+      "fail_case": "out-tokai-2026-02",
+      "lesson": "Lost on price after a mid-competition budget cut — not a content failure, but a real risk. This deck never leads with price, and we scope a digital-cutdown fallback if TV budget wobbles."
     }
   ],
   "prediction": {
     "id": "pred-hoshino-matcha-2026-07",
-    "expects": "success — insight-first + survey-backed + same-client precedent all align",
-    "risks": "if lost, likely on price positioning (cf. out-tokai-2026-02 pattern)"
+    "expects": "success — same-client ritual framing won in Feb 2026, reinforced by survey-backed (0.95), narrow-persona (0.7) and insight-first (0.6) judgments, all with matching evidence on this exact segment",
+    "risks": "if this fails: (1) the ritual insight conflicts with Hoshino's own consumer research (Sakura pattern), or (2) budget cut mid-competition turns it into a price fight (Tokai pattern)"
   }
 }

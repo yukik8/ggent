@@ -22,6 +22,8 @@ const SLIDES_PATH = new URL("../../ui/slides.html", import.meta.url);
 app.get("/slides", (c) => c.html(readFileSync(SLIDES_PATH, "utf8")));
 app.get("/demo/slides", (c) =>
   c.json(JSON.parse(readFileSync(new URL("../../demo/slides.json", import.meta.url), "utf8"))));
+app.get("/demo/slides-generic", (c) =>
+  c.json(JSON.parse(readFileSync(new URL("../../demo/slides-generic.json", import.meta.url), "utf8"))));
 app.get("/demo/:side", (c) => {
   const side = c.req.param("side").replace(/[^a-z]/g, "");
   return c.text(readFileSync(new URL(`../../demo/${side}.md`, import.meta.url), "utf8"));

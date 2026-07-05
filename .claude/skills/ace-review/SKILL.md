@@ -57,21 +57,39 @@ value of this brain.
 
    ### B. Slide deck (the final product — write `demo/slides.json`)
    Translate the brief's decisions into an actual deck by writing
-   `demo/slides.json` (rendered at `http://localhost:3001/slides`). Schema:
+   `demo/slides.json` (rendered at `http://localhost:3001/slides`).
+   The deck carries its own ART DIRECTION: derive the `design` block from the
+   client's brand world (a matcha launch gets washi/matcha/gold; a fintech
+   client gets a different palette — never reuse another client's tokens).
+   Schema:
    ```json
    {
      "deck_title": "...", "client": "...", "generated_by": "ace-review <date>",
+     "design": {
+       "concept": "one line: what world this deck borrows its look from",
+       "palette": { "paper": "#bg", "ink": "#text", "matcha": "#primary",
+                    "deep": "#dark", "gold": "#accent", "stone": "#muted" },
+       "signature": "the one memorable visual device"
+     },
      "slides": [
-       { "n": 1, "title": "...", "bullets": ["..."], "visual_hint": "...",
+       { "n": 1, "layout": "hero|stat|persona|storyboard|generic",
+         "kicker": "short label (rendered vertically)",
+         "statement": "ONE short line — never a bullet wall",
+         "support": "one supporting sentence",
+         "stats":   [ { "value": "58%", "label": "..." } ],
+         "persona": [ "trait line", "..." ],
+         "frames":  [ { "caption": "...", "image": "optional url/data-uri" } ],
          "evidence": [ { "id": "jdg-xxx", "confidence": 0.8, "why": "..." } ] }
      ],
      "avoided_risks": [ { "fail_case": "out-xxx", "lesson": "..." } ],
      "prediction": { "id": "pred-xxx", "expects": "...", "risks": "..." }
    }
    ```
-   Every slide MUST carry an `evidence` array citing real node ids — the
-   evidence rail next to each slide is the product's core claim. Put the
-   strategy's decision trace into the bullets, not generic filler.
+   Layout guide: `hero` = the insight (slide 1), `stat` = numbers pulled from
+   Data nodes, `persona` = target definition, `storyboard` = creative,
+   `generic` = fallback (uses `bullets`). Include only the field the layout
+   needs. Every slide MUST carry `evidence` citing real node ids — the
+   evidence rail is the product's core claim.
 
    ### C. Write the deck and the prediction back to the graph
    First, register the generated deck itself as a Presentation node — this is
