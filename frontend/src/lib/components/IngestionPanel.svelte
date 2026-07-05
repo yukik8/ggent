@@ -85,9 +85,9 @@
 				<div class="mt-4 rounded-lg border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-300">{error}</div>
 			{/if}
 
-			{#if result?.inserted}
+			{#if result?.nodeCounts}
 				<div class="mt-4 rounded-lg border border-emerald-900/60 bg-emerald-950/30 px-3 py-2 text-sm text-emerald-300">
-					Ingested — {formatCounts(result.inserted)}
+					Ingested — {formatCounts(result.nodeCounts)}{#if result.edgeCount !== undefined} · {result.edgeCount} edges{/if}
 				</div>
 			{/if}
 
@@ -135,9 +135,9 @@
 				<div class="mt-4 rounded-lg border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-300">{rawError}</div>
 			{/if}
 
-			{#if rawResult?.inferred}
+			{#if rawResult?.nodeCounts}
 				<div class="mt-4 rounded-lg border border-emerald-900/60 bg-emerald-950/30 px-3 py-2 text-sm text-emerald-300">
-					Inferred rows — {formatCounts(Object.fromEntries(Object.entries(rawResult.inferred).map(([k, v]) => [k, Array.isArray(v) ? v.length : 0])))}
+					Parsed — {formatCounts(rawResult.nodeCounts)} · {rawResult.edgeCount ?? 0} edges{#if rawResult.agentSummary}<br/>{rawResult.agentSummary}{/if}
 				</div>
 			{/if}
 
