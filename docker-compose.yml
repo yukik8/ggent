@@ -1,18 +1,18 @@
 services:
   memgraph:
-    image: memgraph/memgraph-platform:2.14.1-memgraph2.14.1-lab2.11.1
+    image: memgraph/memgraph-platform:latest
     ports:
       - "7687:7687"
       - "3000:3000"
     volumes:
       - mg_data:/var/lib/memgraph
     healthcheck:
-      test: ["CMD", "mgconsole", "--host", "0.0.0.0", "--port", "7687", "RETURN 1"]
+      test: ["CMD", "mgconsole", "--host", "0.0.0.0", "--port", "7687", "-e", "RETURN 1"]
       interval: 5s
       retries: 5
 
   weaviate:
-    image: semitechnologies/weaviate:1.27.0
+    image: semitechnologies/weaviate:1.25.5
     ports:
       - "8080:8080"
       - "50051:50051"
@@ -20,8 +20,9 @@ services:
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
       DEFAULT_VECTORIZER_MODULE: text2vec-openai
       ENABLE_MODULES: text2vec-openai
-      OPENAI_APIKEY: ${OPENAI_APIKEY:-}
+      OPENAI_APIKEY: ${OPENAI_API_KEY:-}
       CLUSTER_HOSTNAME: node1
+      CLUSTER_ADVERTISE_ADDR: "127.0.0.1"
 
 volumes:
   mg_data:

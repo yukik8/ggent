@@ -48,7 +48,8 @@ looks only at the neighborhood of the outcome it was given.
    Classify each judgment as **supported / contradicted / unrelated** by this
    outcome.
 
-5. **Write the updates** (per SCHEMA.md rules):
+5. **Write the updates** (per SCHEMA.md rules; always round confidence to 2
+   decimals — `round(c * 100) / 100.0` — or float noise leaks into the UI):
    - supported: `confidence +0.1` (cap 0.95) + a `SUPPORTED_BY` edge
    - contradicted: `confidence -0.2` + a `CONTRADICTED_BY` edge;
      if `< 0.3`, set `status: 'contradicted'`
