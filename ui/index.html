@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ggent — company brain</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b23; --line: #2a3240; --text: #dbe2ec; --dim: #8a94a6;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 14px/1.5 -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  #wrap { display: flex; height: 100vh; }
+  #canvas { flex: 1; display: block; cursor: grab; }
+  #side { width: 340px; background: var(--panel); border-left: 1px solid var(--line); padding: 18px; overflow-y: auto; }
+  h1 { font-size: 16px; letter-spacing: .04em; }
+  h1 small { color: var(--dim); font-weight: 400; margin-left: 8px; }
+  #legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 12px 0 4px; }
+  .key { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  #counts { color: var(--dim); font-size: 12px; margin-bottom: 10px; }
+  #detail { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 8px; }
+  #detail .type { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  #detail .title { font-size: 15px; font-weight: 600; margin: 2px 0 10px; }
+  #detail dl { display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; font-size: 12.5px; }
+  #detail dt { color: var(--dim); } #detail dd { word-break: break-word; }
+  #detail .edges { margin-top: 12px; font-size: 12.5px; }
+  #detail .edges div { padding: 2px 0; color: var(--dim); }
+  #detail .edges b { color: var(--text); font-weight: 500; cursor: pointer; }
+  .conf { display: inline-block; height: 6px; border-radius: 3px; background: #f5c542; vertical-align: middle; }
+  #hint { position: fixed; left: 14px; bottom: 12px; color: var(--dim); font-size: 12px; }
+  .pill { background: #1d2530; border: 1px solid var(--line); border-radius: 20px; padding: 1px 9px; font-size: 11px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="canvas"></canvas>
+  <div id="side">
+    <h1>company brain <small>live graph</small></h1>
+    <div id="counts">loading…</div>
+    <div id="legend"></div>
+    <div id="detail"><div class="type">nothing selected</div>
+      <div style="color:var(--dim);font-size:12.5px;margin-top:8px">
+        Click a node to inspect it. New nodes glow red as agents grow the graph.
+      </div>
+    </div>
+  </div>
+</div>
+<div id="hint"><span class="pill">drag</span> move node <span class="pill">wheel</span> zoom <span class="pill">bg drag</span> pan · polls every 3s</div>
+
+<script>
+const COLORS = {
+  Client:       "#5b9bd5",
+  Requirement:  "#e8833a",
+  Presentation: "#9d7bd8",
+  Data:         "#4db6ac",
+  Attribute:    "#7a869c",
+  Outcome:      "#888",        // overridden by result below
+  Judgment:     "#f5c542",
+  Prediction:   "#e57fb3",
+  _unknown:     "#666",
+};
+const SIZES = { Attribute: 5, Client: 9, Judgment: 9, _default: 7 };
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let W, H, dpr = window.devicePixelRatio || 1;
+function resize() {
+  W = canvas.clientWidth = canvas.parentElement.clientWidth - 340;
+  H = canvas.clientHeight = window.innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener("resize", resize);
+
+const nodes = new Map();   // id -> {id,label,props,x,y,vx,vy,born,pinned}
+let links = [];            // {source,target,rel}
+let view = { x: 0, y: 0, k: 1 };
+let selected = null;
+let firstLoad = true;
+
+const num = (v) => (v && typeof v === "object" && "low" in v) ? v.low : v;
+
+async function cypher(query, params = {}) {
+  const r = await fetch("/cypher", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, params }),
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function refresh() {
+  try {
+    const rows = await cypher(
+      "MATCH (n) OPTIONAL MATCH (n)-[r]->(m) " +
+      "RETURN n.id AS id, labels(n)[0] AS label, properties(n) AS props, type(r) AS rel, m.id AS target"
+    );
+    const seenLinks = [];
+    const now = firstLoad ? -1e9 : performance.now(); // no glow on initial load
+    for (const row of rows) {
+      if (!row.id) continue;
+      if (!nodes.has(row.id)) {
+        const near = row.target && nodes.get(row.target);
+        nodes.set(row.id, {
+          id: row.id, label: row.label, props: row.props,
+          x: (near ? near.x : W / 2) + (Math.random() - 0.5) * 120,
+          y: (near ? near.y : H / 2) + (Math.random() - 0.5) * 120,
+          vx: 0, vy: 0, born: now, pinned: false,
+        });
+      } else {
+        const n = nodes.get(row.id);
+        n.props = row.props; n.label = row.label;
+      }
+      if (row.rel && row.target) seenLinks.push({ source: row.id, target: row.target, rel: row.rel });
+    }
+    links = seenLinks;
+    firstLoad = false;
+    updateSidebar();
+  } catch (e) { document.getElementById("counts").textContent = "backend unreachable: " + e.message; }
+}
+
+function updateSidebar() {
+  const byLabel = {};
+  for (const n of nodes.values()) byLabel[n.label] = (byLabel[n.label] || 0) + 1;
+  document.getElementById("counts").textContent =
+    `${nodes.size} nodes · ${links.length} edges`;
+  document.getElementById("legend").innerHTML = Object.entries(byLabel)
+    .map(([l, c]) => `<span class="key"><span class="dot" style="background:${COLORS[l] || COLORS._unknown}"></span>${l} (${c})</span>`)
+    .join("");
+}
+
+function nodeColor(n) {
+  if (n.label === "Outcome") return n.props.result === "success" ? "#4caf78" : "#e05555";
+  return COLORS[n.label] || COLORS._unknown;
+}
+
+// ---- physics ----
+function tick() {
+  const ns = [...nodes.values()];
+  for (let i = 0; i < ns.length; i++) {
+    const a = ns[i];
+    for (let j = i + 1; j < ns.length; j++) {
+      const b = ns[j];
+      let dx = a.x - b.x, dy = a.y - b.y;
+      let d2 = dx * dx + dy * dy || 1;
+      if (d2 < 250000) {
+        const f = 1600 / d2;
+        const d = Math.sqrt(d2);
+        dx /= d; dy /= d;
+        a.vx += dx * f; a.vy += dy * f;
+        b.vx -= dx * f; b.vy -= dy * f;
+      }
+    }
+  }
+  for (const l of links) {
+    const a = nodes.get(l.source), b = nodes.get(l.target);
+    if (!a || !b) continue;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const d = Math.sqrt(dx * dx + dy * dy) || 1;
+    const f = (d - 110) * 0.004;
+    a.vx += (dx / d) * f; a.vy += (dy / d) * f;
+    b.vx -= (dx / d) * f; b.vy -= (dy / d) * f;
+  }
+  for (const n of ns) {
+    n.vx += (W / 2 - n.x) * 0.0006; n.vy += (H / 2 - n.y) * 0.0006;
+    if (!n.pinned) { n.x += n.vx; n.y += n.vy; }
+    n.vx *= 0.85; n.vy *= 0.85;
+  }
+}
+
+function draw() {
+  const now = performance.now();
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(view.x, view.y); ctx.scale(view.k, view.k);
+
+  for (const l of links) {
+    const a = nodes.get(l.source), b = nodes.get(l.target);
+    if (!a || !b) continue;
+    ctx.strokeStyle = "rgba(140,155,180,0.28)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    if (view.k > 0.7) {
+      ctx.fillStyle = "rgba(140,155,180,0.5)";
+      ctx.font = "9px sans-serif";
+      ctx.fillText(l.rel, (a.x + b.x) / 2 + 3, (a.y + b.y) / 2 - 3);
+    }
+  }
+  for (const n of nodes.values()) {
+    const r = SIZES[n.label] || SIZES._default;
+    const age = now - n.born;
+    if (age < 6000) { // newborn glow — the "red branch" moment
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r + 7 + 3 * Math.sin(now / 150), 0, 7);
+      ctx.strokeStyle = `rgba(230,60,60,${1 - age / 6000})`;
+      ctx.lineWidth = 2.5; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 7);
+    ctx.fillStyle = nodeColor(n); ctx.fill();
+    if (selected === n.id) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke(); }
+    if (view.k > 0.55) {
+      ctx.fillStyle = "rgba(219,226,236,0.85)";
+      ctx.font = "10px sans-serif";
+      ctx.fillText(n.props.title ?? n.id, n.x + r + 4, n.y + 3);
+    }
+  }
+  ctx.restore();
+}
+
+function loop() { tick(); draw(); requestAnimationFrame(loop); }
+
+// ---- interaction ----
+function pick(mx, my) {
+  const x = (mx - view.x) / view.k, y = (my - view.y) / view.k;
+  for (const n of [...nodes.values()].reverse()) {
+    const r = (SIZES[n.label] || SIZES._default) + 4;
+    if ((n.x - x) ** 2 + (n.y - y) ** 2 < r * r) return n;
+  }
+  return null;
+}
+let drag = null, panning = null, moved = false;
+canvas.addEventListener("mousedown", (e) => {
+  moved = false;
+  const n = pick(e.offsetX, e.offsetY);
+  if (n) { drag = n; n.pinned = true; }
+  else panning = { x: e.offsetX - view.x, y: e.offsetY - view.y };
+});
+window.addEventListener("mousemove", (e) => {
+  moved = true;
+  if (drag) {
+    drag.x = (e.offsetX - view.x) / view.k;
+    drag.y = (e.offsetY - view.y) / view.k;
+  } else if (panning) { view.x = e.offsetX - panning.x; view.y = e.offsetY - panning.y; }
+});
+window.addEventListener("mouseup", (e) => {
+  if (drag && !moved) {} // click handled below
+  if (drag) drag.pinned = false;
+  drag = null; panning = null;
+});
+canvas.addEventListener("click", (e) => {
+  if (moved && !drag) return;
+  const n = pick(e.offsetX, e.offsetY);
+  if (n) select(n.id);
+});
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const f = e.deltaY < 0 ? 1.12 : 0.89;
+  const mx = e.offsetX, my = e.offsetY;
+  view.x = mx - (mx - view.x) * f; view.y = my - (my - view.y) * f;
+  view.k *= f;
+}, { passive: false });
+
+function select(id) {
+  selected = id;
+  const n = nodes.get(id);
+  if (!n) return;
+  const p = n.props;
+  const rows = Object.entries(p)
+    .filter(([k]) => !["id", "title"].includes(k))
+    .map(([k, v]) => {
+      v = num(v);
+      if (k === "confidence") {
+        const c = parseFloat(v);
+        return `<dt>${k}</dt><dd><span class="conf" style="width:${c * 80}px"></span> ${c}</dd>`;
+      }
+      return `<dt>${k}</dt><dd>${v}</dd>`;
+    }).join("");
+  const out = links.filter((l) => l.source === id).map((l) =>
+    `<div>—${l.rel}→ <b onclick="select('${l.target}')">${l.target}</b></div>`).join("");
+  const inn = links.filter((l) => l.target === id).map((l) =>
+    `<div><b onclick="select('${l.source}')">${l.source}</b> —${l.rel}→</div>`).join("");
+  document.getElementById("detail").innerHTML = `
+    <div class="type" style="color:${nodeColor(n)}">${n.label}</div>
+    <div class="title">${p.title ?? id}</div>
+    <dl><dt>id</dt><dd>${id}</dd>${rows}</dl>
+    <div class="edges">${out}${inn}</div>`;
+}
+window.select = select;
+
+resize();
+refresh().then(() => {
+  // settle initial layout faster
+  for (let i = 0; i < 200; i++) tick();
+});
+setInterval(refresh, 3000);
+loop();
+</script>
+</body>
+</html>
