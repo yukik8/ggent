@@ -43,9 +43,13 @@ export interface OntologyStatus {
 export interface IngestResult {
 	ontologyVersion?: string;
 	competenceQuestions?: string[];
-	counts?: Record<string, number>;
-	inserted?: Record<string, number>;
-	inferred?: Partial<SeedRows>;
+	nodeCounts?: Record<string, number>;
+	edgeCount?: number;
+	vectorized?: Record<string, number>;
+	evolved?: boolean;
+	source?: 'files' | 'synth';
+	agentSummary?: string;
+	errors?: string[];
 	error?: string;
 }
 

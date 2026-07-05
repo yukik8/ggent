@@ -70,9 +70,9 @@
 				</div>
 			{/if}
 
-			{#if result?.counts}
+			{#if result?.nodeCounts}
 				<div class="mt-4 rounded-lg border border-emerald-900/60 bg-emerald-950/30 px-3 py-2 text-sm text-emerald-300">
-					Ontology built. Seed rows: {Object.entries(result.counts).map(([k, v]) => `${k}: ${v}`).join(', ')}
+					Ontology built. Seed rows: {Object.entries(result.nodeCounts).map(([k, v]) => `${k}: ${v}`).join(', ')}
 				</div>
 			{/if}
 
