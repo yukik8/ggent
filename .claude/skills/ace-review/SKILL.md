@@ -55,11 +55,39 @@ value of this brain.
      Cite precedents by id the same way.
    - Data to use (Data nodes that precedents were BACKED_BY and that apply here)
 
-   ### B. Slide skeleton
-   Translate the brief's decisions into a slide structure (per slide: purpose /
-   content / the decision it rests on).
+   ### B. Slide deck (the final product — write `demo/slides.json`)
+   Translate the brief's decisions into an actual deck by writing
+   `demo/slides.json` (rendered at `http://localhost:3001/slides`). Schema:
+   ```json
+   {
+     "deck_title": "...", "client": "...", "generated_by": "ace-review <date>",
+     "slides": [
+       { "n": 1, "title": "...", "bullets": ["..."], "visual_hint": "...",
+         "evidence": [ { "id": "jdg-xxx", "confidence": 0.8, "why": "..." } ] }
+     ],
+     "avoided_risks": [ { "fail_case": "out-xxx", "lesson": "..." } ],
+     "prediction": { "id": "pred-xxx", "expects": "...", "risks": "..." }
+   }
+   ```
+   Every slide MUST carry an `evidence` array citing real node ids — the
+   evidence rail next to each slide is the product's core claim. Put the
+   strategy's decision trace into the bullets, not generic filler.
 
-   ### C. Upfront prediction (written back to the graph as a Prediction node)
+   ### C. Write the deck and the prediction back to the graph
+   First, register the generated deck itself as a Presentation node — this is
+   what the future Outcome will attach to, and its `summary` is the evidence
+   the next brain-learn run will read:
+   ```cypher
+   MERGE (p:Presentation {id: $presId})
+     SET p.title = $deckTitle, p.summary = $strategySummary,
+         p.version = 'final', p.created = $today
+   WITH p MATCH (r:Requirement {id: $reqId}) MERGE (r)-[:ANSWERED_BY]->(p)
+   WITH p MATCH (c:Client {id: $clientId}) MERGE (p)-[:FOR_CLIENT]->(c)
+   ```
+   Also `MERGE (p)-[:BACKED_BY]->(d)` for each Data node the deck uses, and
+   dual-write the summary to Weaviate's Presentation collection.
+
+   Then the upfront prediction (Prediction node):
    - `expects`: why we predict success (the judgments relied on)
    - `risks`: if this fails, what will have caused it (from similar fail precedents)
    - Create `(pred)-[:ABOUT]->(requirement)` and `(pred)-[:BASED_ON]->(each judgment)`,

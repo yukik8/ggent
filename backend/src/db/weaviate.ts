@@ -1,12 +1,17 @@
 import weaviate, { WeaviateClient } from "weaviate-client";
 
-const WEAVIATE_HOST = process.env.WEAVIATE_HOST ?? "localhost:8080";
+const [WEAVIATE_HOSTNAME, WEAVIATE_PORT] = (
+  process.env.WEAVIATE_HOST ?? "localhost:8080"
+).split(":");
 
 let client: WeaviateClient | null = null;
 
 export async function getWeaviate(): Promise<WeaviateClient> {
   if (client) return client;
-  client = await weaviate.connectToLocal({ host: WEAVIATE_HOST });
+  client = await weaviate.connectToLocal({
+    host: WEAVIATE_HOSTNAME,
+    port: Number(WEAVIATE_PORT ?? 8080),
+  });
   return client;
 }
 

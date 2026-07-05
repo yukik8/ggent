@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { zValidator } from "@hono/zod-validator";
@@ -6,6 +7,21 @@ import { runQuery } from "./db/memgraph";
 import { vectorSearch } from "./db/weaviate";
 
 const app = new Hono();
+
+// demo UI (self-contained, same-origin so /cypher needs no CORS)
+const UI_PATH = new URL("../../ui/index.html", import.meta.url);
+app.get("/ui", (c) => c.html(readFileSync(UI_PATH, "utf8")));
+
+const COMPARE_PATH = new URL("../../ui/compare.html", import.meta.url);
+app.get("/compare", (c) => c.html(readFileSync(COMPARE_PATH, "utf8")));
+const SLIDES_PATH = new URL("../../ui/slides.html", import.meta.url);
+app.get("/slides", (c) => c.html(readFileSync(SLIDES_PATH, "utf8")));
+app.get("/demo/slides", (c) =>
+  c.json(JSON.parse(readFileSync(new URL("../../demo/slides.json", import.meta.url), "utf8"))));
+app.get("/demo/:side", (c) => {
+  const side = c.req.param("side").replace(/[^a-z]/g, "");
+  return c.text(readFileSync(new URL(`../../demo/${side}.md`, import.meta.url), "utf8"));
+});
 
 const CypherBody = z.object({
   query: z.string().min(1),
