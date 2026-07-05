@@ -4,5 +4,6 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-01-27"
+  "decisionDate": "2026-01-27",
+  "reason": "Client scaled back the specialty-retail entry for budget reasons and took a reduced plan in-house."
 }

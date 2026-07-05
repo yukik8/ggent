@@ -4,5 +4,6 @@
   "outcome": "won",
   "payment": true,
   "campaignEffect": "Subscription sign-ups from the existing buyer file exceeded target, lifting second-purchase rate among first-time buyers over the campaign window.",
-  "decisionDate": "2026-05-12"
+  "decisionDate": "2026-05-12",
+  "reason": "Incumbent relationship carried the decision."
 }

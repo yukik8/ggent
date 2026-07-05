@@ -4,5 +4,6 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-04-10"
+  "decisionDate": "2026-04-10",
+  "reason": "Client said the plan listed tactics without a convincing case for why they would work."
 }

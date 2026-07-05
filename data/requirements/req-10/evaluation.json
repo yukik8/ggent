@@ -4,5 +4,6 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-02-27"
+  "decisionDate": "2026-02-27",
+  "reason": "Client found the proposal competent but undifferentiated and chose an agency with a sharper strategic rationale."
 }

@@ -3,9 +3,51 @@
 **CONFIDENTIAL GROUND TRUTH.** This file exists only for post-hoc validation of the
 extraction system. It must NEVER be provided to, referenced by, or made discoverable
 to the AI system that mines the draft-vs-final diffs. Downstream generator agents
-must apply these quirks consistently to every proposal Sofia revises
-(req-01 through req-09) and must NOT apply them to Daniel Okafor's revisions
-(req-10 through req-12) or to the unrevised junior drafts (req-13 through req-15).
+must apply these quirks consistently to every proposal Sofia revises and must NOT
+apply them to Daniel Okafor's revisions or to the unrevised junior drafts.
+
+**Reviser assignment (ground truth):**
+
+- Sofia-revised (Quirks A + B apply): req-01 through req-09, req-16, req-17,
+  req-18, req-21, req-22, req-26, req-27, req-28, req-31, req-32, req-36, req-37,
+  req-41, req-42, req-43, req-44, req-49, req-50, req-51, req-52, req-57, req-58,
+  req-59, req-60, req-65, req-66, req-67, req-68, req-73, req-74, req-75, req-76,
+  req-81, req-82, req-83, req-84, req-89, req-90, req-91, req-92, req-96, req-97,
+  req-101, req-102, req-106, req-107, req-110, req-111, req-114, req-115,
+  req-118, req-119, req-122, req-123, req-126, req-127, req-130, req-131,
+  req-134, req-135, req-138, req-139, req-142, req-143
+- Daniel-revised (NO systematic quirks): req-10, req-11, req-12, req-19, req-23,
+  req-29, req-33, req-34, req-38, req-45, req-46, req-53, req-54, req-61, req-62,
+  req-69, req-70, req-77, req-78, req-85, req-86, req-93, req-94, req-98, req-99,
+  req-103, req-108, req-112, req-116, req-120, req-124, req-128, req-132,
+  req-136, req-140, req-144
+- Unrevised junior drafts (product-first and vague): req-13, req-14, req-15,
+  req-20, req-24, req-25, req-30, req-35, req-39, req-40, req-47, req-48, req-55,
+  req-56, req-63, req-64, req-71, req-72, req-79, req-80, req-87, req-88, req-95,
+  req-100, req-104, req-105, req-109, req-113, req-117, req-121, req-125,
+  req-129, req-133, req-137, req-141, req-145
+
+**Outcome-attribution design (for testing the attribution caveat):**
+
+- Sofia losses with EXTERNAL, content-unrelated reasons (a correct system must
+  NOT count these against her judgments): req-18, req-37, req-44, req-60, req-68,
+  req-84, req-91, req-92, req-102, req-115, req-127, req-135
+- Sofia losses with CONTENT-related reasons (legitimate contradicting evidence):
+  req-28, req-52, req-76, req-107, req-123
+- Unrevised-draft wins that are pure luck (relationship, sole bidder), NOT
+  proposal quality — a correct system must not learn from them: req-25, req-48,
+  req-56, req-71, req-87, req-104, req-137, req-141
+- Daniel's wins are attributable to incumbency, pricing, or event logistics,
+  never to systematic proposal-quality patterns.
+
+Junior draft authors and their distinct flaws (so drafts are not uniform):
+
+- Emma Lindqvist (p-jr1): feature-led and enthusiastic, vague on evidence,
+  adjective-heavy openings.
+- Ryo Tanabe (p-jr2): organized with clean structure, but product-first and
+  under-quantified; loves tables.
+- Marcus Bell (p-jr3): trend-chasing; stacks tactics without a unifying problem
+  statement and buries the target audience mid-document.
 
 ---
 
@@ -91,11 +133,15 @@ Sofia leaves the following untouched in every revision:
 4. **Timeline and price point** — dates and pricing carry over verbatim from the
    requirement and the draft.
 
-Daniel Okafor's revisions (req-10, req-11, req-12) must NOT exhibit Quirk A or
-Quirk B in any systematic way. He polishes grammar, tightens wording, and maybe
-adds one generic statistic without a ref citation, but his versions stay
-product-first and mostly unquantified. His single win (req-12) is attributable
-to an incumbent relationship, not proposal quality. The unrevised drafts
-(req-13, req-14, req-15) go out product-first and vague, and all lose.
+Daniel Okafor's revisions must NOT exhibit Quirk A or Quirk B in any systematic
+way. He polishes grammar, tightens wording, and maybe adds one generic statistic
+without a ref citation, but his versions stay product-first and mostly
+unquantified. His wins are attributable to incumbency, pricing, or logistics,
+not proposal quality. The unrevised drafts go out product-first and vague; the
+few that win do so for relationship or sole-bidder reasons recorded in their
+evaluation files.
 
-Holdout set for validation: req-03, req-06, req-09 (all Sofia-revised wins).
+Holdout set for validation (all Sofia-revised wins; their final.md lives in
+`data/holdout/<req-id>/` and must NOT exist under `data/requirements/<req-id>/`):
+req-03, req-06, req-09, req-27, req-41, req-50, req-57, req-66, req-74, req-82,
+req-90, req-96, req-106, req-111, req-118, req-130.

@@ -4,5 +4,6 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-06-09"
+  "decisionDate": "2026-06-09",
+  "reason": "Client feedback: the proposal read product-first and never named a business problem."
 }

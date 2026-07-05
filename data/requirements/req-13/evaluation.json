@@ -4,5 +4,6 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-05-27"
+  "decisionDate": "2026-05-27",
+  "reason": "Client said the plan was enthusiastic but vague, with no evidence behind its claims."
 }
