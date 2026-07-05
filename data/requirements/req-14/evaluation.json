@@ -4,5 +4,8 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-06-09"
+  "decisionDate": "2026-06-09",
+  "lossReason": "content",
+  "lossReasonDetail": "proposal-quality",
+  "clientFeedback": "Rachel's team said the deck listed the analytics module's features but never connected them to what a CFO actually worries about, and there was no evidence base. It didn't survive the first internal review."
 }

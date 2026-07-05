@@ -4,5 +4,8 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-05-27"
+  "decisionDate": "2026-05-27",
+  "lossReason": "content",
+  "lossReasonDetail": "proposal-quality",
+  "clientFeedback": "Marcus said the proposal was enthusiastic about the cargo bike but never engaged with the real question \u2014 why a family would replace second-car trips \u2014 and none of the claims carried numbers. They went with a shop that led with the household economics."
 }

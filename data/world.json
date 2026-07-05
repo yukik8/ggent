@@ -8,28 +8,70 @@
       "id": "p-ace",
       "name": "Sofia Reyes",
       "title": "Creative Strategy Director",
+      "level": "director",
+      "team": "Strategy & Planning",
+      "reportsTo": null,
+      "hireDate": "2016-04-11",
+      "background": "Former strategy lead at a big-network NYC agency; joined Meridian & Craft to build the planning practice from scratch.",
       "performanceRating": "top",
+      "annualReview2025": "exceptional",
+      "performance": {
+        "asReviser": { "deals": 9, "won": 8, "lost": 1, "winRate": 0.89 },
+        "avgDealSizeUSD": 457000,
+        "note": "Sole loss (req-07) attributed by the client to competitor pricing, not proposal content."
+      },
       "note": "The ace. Revises junior drafts before high-stakes pitches."
     },
     {
       "id": "p-mid",
       "name": "Daniel Okafor",
       "title": "Senior Planner",
+      "level": "senior",
+      "team": "Strategy & Planning",
+      "reportsTo": "p-ace",
+      "hireDate": "2019-09-02",
+      "background": "Promoted from account executive; strong process manager and client-service operator.",
       "performanceRating": "solid",
+      "annualReview2025": "meets expectations",
+      "performance": {
+        "asReviser": { "deals": 3, "won": 1, "lost": 2, "winRate": 0.33 },
+        "avgDealSizeUSD": 307000,
+        "note": "Sole win (req-12) widely attributed internally to the incumbent relationship, not proposal quality."
+      },
       "note": "Competent reviser, but lacks Sofia's tacit judgment."
     },
     {
       "id": "p-jr1",
       "name": "Emma Lindqvist",
       "title": "Junior Planner",
+      "level": "junior",
+      "team": "Strategy & Planning",
+      "reportsTo": "p-mid",
+      "hireDate": "2024-06-17",
+      "background": "Hired straight out of a Midwest advertising program; strongest on creative energy, weakest on evidence discipline.",
       "performanceRating": "developing",
+      "annualReview2025": "developing",
+      "performance": {
+        "asAuthor": { "drafts": 8, "won": 4, "lost": 4 },
+        "note": "All 4 wins came from drafts revised by Sofia. Both unrevised submissions (req-13, req-15) lost."
+      },
       "note": "Writes first drafts. Feature-led, enthusiastic, vague on evidence."
     },
     {
       "id": "p-jr2",
       "name": "Ryo Tanabe",
       "title": "Junior Planner",
+      "level": "junior",
+      "team": "Strategy & Planning",
+      "reportsTo": "p-mid",
+      "hireDate": "2023-10-02",
+      "background": "Second-year planner with a research background; organized and thorough but writes product-first.",
       "performanceRating": "developing",
+      "annualReview2025": "developing",
+      "performance": {
+        "asAuthor": { "drafts": 7, "won": 5, "lost": 2 },
+        "note": "4 of 5 wins were Sofia-revised; the 5th (req-12) is attributed to the incumbent relationship. Unrevised submission (req-14) lost."
+      },
       "note": "Writes first drafts. Organized but product-first and under-quantified."
     }
   ],
@@ -39,35 +81,49 @@
       "industry": "food & beverage",
       "name": "Sunbrook Foods",
       "description": "Mid-market packaged snack company known for its Sunbrook Crisps line, sold in grocery chains across the Midwest.",
-      "keyAccountSince": 2019
+      "keyAccountSince": 2019,
+      "contact": { "name": "Greg Hollis", "title": "VP of Marketing" }
     },
     {
       "id": "c-02",
       "industry": "cosmetics",
       "name": "Velura Skin",
       "description": "Direct-to-consumer clean-beauty brand built around a fragrance-free moisturizer franchise, expanding into specialty retail.",
-      "keyAccountSince": 2021
+      "keyAccountSince": 2021,
+      "contact": { "name": "Nadia Chen", "title": "Head of Brand" }
     },
     {
       "id": "c-03",
       "industry": "mobility",
       "name": "Northtrail Mobility",
       "description": "Maker of commuter e-bikes and a subscription battery-swap service targeting mid-size US cities.",
-      "keyAccountSince": 2020
+      "keyAccountSince": 2020,
+      "contact": { "name": "Marcus Webb", "title": "Chief Marketing Officer" }
     },
     {
       "id": "c-04",
       "industry": "B2B SaaS",
       "name": "Ledgerline",
       "description": "Cloud accounts-payable automation platform for 50-500 employee companies, sold on annual contracts.",
-      "keyAccountSince": 2022
+      "keyAccountSince": 2022,
+      "contact": { "name": "Rachel Donnelly", "title": "VP of Demand Generation" }
     },
     {
       "id": "c-05",
       "industry": "regional tourism (public sector)",
       "name": "Cascade Valley Tourism Board",
       "description": "Public-sector destination marketing organization promoting the fictional Cascade Valley region for weekend and shoulder-season travel.",
-      "keyAccountSince": 2018
+      "keyAccountSince": 2018,
+      "contact": { "name": "Tom Ashford", "title": "Executive Director" }
+    },
+    {
+      "id": "c-06",
+      "industry": "specialty coffee retail",
+      "name": "Copperleaf Coffee Roasters",
+      "description": "Regional specialty coffee chain (14 cafés in Ohio) launching its first ready-to-drink cold brew line into Midwest grocery. New-business prospect, no prior work with Meridian & Craft.",
+      "keyAccountSince": null,
+      "prospect": true,
+      "contact": { "name": "Elena Vasquez", "title": "Director of Marketing" }
     }
   ],
   "referenceStubs": [
@@ -370,6 +426,22 @@
       "submittedVersion": "draft",
       "outcome": "lost",
       "holdout": false
+    },
+    {
+      "id": "req-16",
+      "clientId": "c-06",
+      "product": "Copperleaf Cold Craft ready-to-drink cold brew launch into Midwest grocery",
+      "targetAudience": "Grocery shoppers aged 21-35 who buy premium RTD coffee",
+      "budgetUSD": 390000,
+      "timeline": "2026-09-15 to 2026-12-31",
+      "pricePoint": "$4.29 per 11oz can (vs $3.49 national RTD average)",
+      "authorId": null,
+      "reviserId": null,
+      "submittedVersion": null,
+      "outcome": null,
+      "holdout": false,
+      "status": "open",
+      "note": "Live new-business pitch for the demo. Brief only — no draft, no final, no outcome yet. This is the deal /ace-review runs against."
     }
   ],
   "personaSeeds": [
@@ -397,6 +469,11 @@
       "clientId": "c-05",
       "name": "Sam, 29, 'the weekend escape planner'",
       "oneLine": "City dweller who books drive-distance weekend trips off short-form video inspiration, usually within 30 days of seeing the content."
+    },
+    {
+      "clientId": "c-06",
+      "name": "Dana, 26, 'the third-place regular'",
+      "oneLine": "Loyal café-goer who loves Copperleaf in-store but grabs whatever RTD can is familiar at the grocery shelf, because the brand means nothing to her outside the café."
     }
   ]
 }

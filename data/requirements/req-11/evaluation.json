@@ -4,5 +4,8 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-04-10"
+  "decisionDate": "2026-04-10",
+  "lossReason": "content",
+  "lossReasonDetail": "proposal-quality",
+  "clientFeedback": "Greg said the deck read like a product sell sheet: lots about the baked line's features, almost nothing about the business case. Without evidence on the health-snacking shopper, the committee couldn't defend the premium price point internally."
 }
