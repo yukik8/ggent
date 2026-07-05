@@ -1,11 +1,15 @@
+import "dotenv/config";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { runQuery } from "./db/memgraph";
 import { vectorSearch } from "./db/weaviate";
+import ingestRoutes from "./routes/ingest";
 
 const app = new Hono();
+
+app.route("/ingest", ingestRoutes);
 
 const CypherBody = z.object({
   query: z.string().min(1),
