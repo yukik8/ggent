@@ -1,0 +1,402 @@
+{
+  "agency": {
+    "name": "Meridian & Craft",
+    "location": "Halverton, Ohio (fictional)"
+  },
+  "persons": [
+    {
+      "id": "p-ace",
+      "name": "Sofia Reyes",
+      "title": "Creative Strategy Director",
+      "performanceRating": "top",
+      "note": "The ace. Revises junior drafts before high-stakes pitches."
+    },
+    {
+      "id": "p-mid",
+      "name": "Daniel Okafor",
+      "title": "Senior Planner",
+      "performanceRating": "solid",
+      "note": "Competent reviser, but lacks Sofia's tacit judgment."
+    },
+    {
+      "id": "p-jr1",
+      "name": "Emma Lindqvist",
+      "title": "Junior Planner",
+      "performanceRating": "developing",
+      "note": "Writes first drafts. Feature-led, enthusiastic, vague on evidence."
+    },
+    {
+      "id": "p-jr2",
+      "name": "Ryo Tanabe",
+      "title": "Junior Planner",
+      "performanceRating": "developing",
+      "note": "Writes first drafts. Organized but product-first and under-quantified."
+    }
+  ],
+  "clients": [
+    {
+      "id": "c-01",
+      "industry": "food & beverage",
+      "name": "Sunbrook Foods",
+      "description": "Mid-market packaged snack company known for its Sunbrook Crisps line, sold in grocery chains across the Midwest.",
+      "keyAccountSince": 2019
+    },
+    {
+      "id": "c-02",
+      "industry": "cosmetics",
+      "name": "Velura Skin",
+      "description": "Direct-to-consumer clean-beauty brand built around a fragrance-free moisturizer franchise, expanding into specialty retail.",
+      "keyAccountSince": 2021
+    },
+    {
+      "id": "c-03",
+      "industry": "mobility",
+      "name": "Northtrail Mobility",
+      "description": "Maker of commuter e-bikes and a subscription battery-swap service targeting mid-size US cities.",
+      "keyAccountSince": 2020
+    },
+    {
+      "id": "c-04",
+      "industry": "B2B SaaS",
+      "name": "Ledgerline",
+      "description": "Cloud accounts-payable automation platform for 50-500 employee companies, sold on annual contracts.",
+      "keyAccountSince": 2022
+    },
+    {
+      "id": "c-05",
+      "industry": "regional tourism (public sector)",
+      "name": "Cascade Valley Tourism Board",
+      "description": "Public-sector destination marketing organization promoting the fictional Cascade Valley region for weekend and shoulder-season travel.",
+      "keyAccountSince": 2018
+    }
+  ],
+  "referenceStubs": [
+    {
+      "id": "ref-01",
+      "title": "US Salty Snacks Category Stat Pack 2025",
+      "keyStats": [
+        "US salty snacks retail market valued at $34.2B in 2024, growing 3.1% YoY.",
+        "Private-label share of salty snacks rose from 18% to 23% between 2021 and 2024.",
+        "Only 27% of snack buyers aged 18-34 can name a preferred mid-market crisp brand unprompted.",
+        "Repeat purchase rate for the average mid-market snack brand is 31%, versus 52% for the top-3 national brands.",
+        "In-store sampling lifts trial conversion by 19% on average in grocery channels."
+      ]
+    },
+    {
+      "id": "ref-02",
+      "title": "Clean Beauty & Skincare Stat Pack 2025",
+      "keyStats": [
+        "US clean-beauty segment reached $11.6B in 2024, up 8.4% YoY while total prestige skincare grew only 2.9%.",
+        "62% of skincare buyers under 30 say ingredient transparency is a top-3 purchase driver.",
+        "Average DTC skincare brand loses 44% of first-time buyers before a second order.",
+        "Specialty retail (e.g. beauty chains) accounts for 38% of clean-beauty discovery, versus 24% for brand-owned sites.",
+        "Moisturizer is the highest-frequency skincare repurchase category at 3.4 units per buyer per year."
+      ]
+    },
+    {
+      "id": "ref-03",
+      "title": "Urban Micromobility Stat Pack 2025",
+      "keyStats": [
+        "US e-bike unit sales hit 1.4M in 2024, a 12% YoY increase.",
+        "68% of urban commuters aged 25-40 say upfront price is the main barrier to buying an e-bike.",
+        "Average commute distance in mid-size US cities is 7.8 miles, within a single e-bike battery charge.",
+        "Subscription and financing models grew to 21% of e-bike transactions in 2024, from 9% in 2022.",
+        "Cities with protected bike lanes show 2.3x higher e-bike adoption than comparable cities without."
+      ]
+    },
+    {
+      "id": "ref-04",
+      "title": "Mid-Market B2B SaaS Buying Stat Pack 2025",
+      "keyStats": [
+        "73% of mid-market finance software evaluations now start with a shortlist built from peer review sites.",
+        "Average AP automation deal cycle for 50-500 employee firms is 94 days.",
+        "Finance teams report 62% of invoice processing time is still manual at companies without AP automation.",
+        "LinkedIn B2B benchmark CPM for finance decision-makers is $58, versus $31 for general B2B targeting.",
+        "Case-study-led landing pages convert demo requests at 4.7%, versus 2.1% for feature-led pages."
+      ]
+    },
+    {
+      "id": "ref-05",
+      "title": "Regional US Tourism Stat Pack 2025",
+      "keyStats": [
+        "Drive-market weekend trips make up 61% of visits to small US regional destinations.",
+        "Shoulder-season (Apr-May, Sep-Oct) occupancy for regional destinations averages 46%, versus 78% peak-season.",
+        "54% of travelers under 35 pick regional trips based on short-form video seen in the prior 30 days.",
+        "Average regional weekend visitor spends $412 per trip across lodging, food, and activities.",
+        "Destinations running always-on social content see 27% higher repeat visitation than campaign-only destinations."
+      ]
+    },
+    {
+      "id": "ref-06",
+      "title": "Social Media Advertising Benchmark Report 2025",
+      "keyStats": [
+        "Instagram Reels average CPM: $9.40; TikTok: $7.80; YouTube Shorts: $6.90 (US, all verticals).",
+        "Short-form video ads average 2.4x the completion rate of static feed ads.",
+        "Creator-partnership posts deliver 31% lower cost-per-engagement than brand-owned posts.",
+        "Average click-through rate for paid social across verticals is 1.2%; top-quartile campaigns reach 2.6%.",
+        "Frequency above 4 exposures per week correlates with a 18% drop in engagement rate."
+      ]
+    },
+    {
+      "id": "ref-07",
+      "title": "Gen-Z Consumer Pulse Survey 2025 (n=4,000, US 18-27)",
+      "keyStats": [
+        "71% of Gen-Z respondents discover new brands primarily through short-form video.",
+        "58% say they distrust ads that make claims without visible evidence or numbers.",
+        "64% have purchased a product recommended by a niche creator with under 100K followers.",
+        "Only 22% respond to discount-led messaging as a first touch; 49% respond to problem-solution storytelling.",
+        "Gen-Z respondents check an average of 2.7 sources before a first purchase over $50."
+      ]
+    },
+    {
+      "id": "ref-08",
+      "title": "US Retail Media Networks Study 2025",
+      "keyStats": [
+        "US retail media ad spend reached $54B in 2024, growing 21% YoY, the fastest-growing paid channel.",
+        "Grocery retail media campaigns average ROAS of 3.8x for snack and beverage brands.",
+        "On-site sponsored product placements drive 15% average lift in units per store per week.",
+        "Retail media CPMs average $12.60 for grocery, versus $9.40 for Instagram Reels.",
+        "68% of CPG brands plan to increase retail media budgets in 2026."
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req-01",
+      "clientId": "c-01",
+      "product": "Sunbrook Crisps 'Bold Batch' spicy flavor line launch",
+      "targetAudience": "Snack buyers aged 18-34 in Midwest grocery drive markets",
+      "budgetUSD": 420000,
+      "timeline": "2025-03-10 to 2025-06-30",
+      "pricePoint": "$3.99 per bag (premium of $0.50 over core line)",
+      "authorId": "p-jr1",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-02",
+      "clientId": "c-02",
+      "product": "Velura Barrier Repair Moisturizer relaunch with new formula",
+      "targetAudience": "Skincare buyers under 30 focused on ingredient transparency",
+      "budgetUSD": 380000,
+      "timeline": "2025-04-01 to 2025-07-15",
+      "pricePoint": "$32 per 50ml jar",
+      "authorId": "p-jr2",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-03",
+      "clientId": "c-03",
+      "product": "Northtrail Commuter One e-bike with battery-swap subscription",
+      "targetAudience": "Urban commuters aged 25-40 in mid-size cities with bike infrastructure",
+      "budgetUSD": 650000,
+      "timeline": "2025-05-01 to 2025-09-30",
+      "pricePoint": "$1,899 upfront or $89/month subscription bundle",
+      "authorId": "p-jr1",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": true
+    },
+    {
+      "id": "req-04",
+      "clientId": "c-04",
+      "product": "Ledgerline AP Automation Suite demand-generation program",
+      "targetAudience": "Finance directors and controllers at 50-500 employee US companies",
+      "budgetUSD": 540000,
+      "timeline": "2025-06-01 to 2025-11-30",
+      "pricePoint": "$24,000 average annual contract value",
+      "authorId": "p-jr2",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-05",
+      "clientId": "c-05",
+      "product": "Cascade Valley shoulder-season weekend getaway campaign",
+      "targetAudience": "Drive-market travelers under 35 within 4 hours of Cascade Valley",
+      "budgetUSD": 310000,
+      "timeline": "2025-08-15 to 2025-10-31",
+      "pricePoint": "Average trip package positioned around $400 per visitor",
+      "authorId": "p-jr1",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-06",
+      "clientId": "c-01",
+      "product": "Sunbrook Crisps retail media push for holiday multipacks",
+      "targetAudience": "Grocery shoppers buying party snacks for holiday gatherings",
+      "budgetUSD": 290000,
+      "timeline": "2025-10-15 to 2025-12-31",
+      "pricePoint": "$8.99 per 6-count multipack",
+      "authorId": "p-jr2",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": true
+    },
+    {
+      "id": "req-07",
+      "clientId": "c-02",
+      "product": "Velura specialty-retail launch (entering national beauty chains)",
+      "targetAudience": "In-store beauty shoppers aged 20-35 discovering clean beauty brands",
+      "budgetUSD": 720000,
+      "timeline": "2026-01-15 to 2026-05-31",
+      "pricePoint": "$28-$46 across hero SKUs",
+      "authorId": "p-jr1",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "lost",
+      "holdout": false
+    },
+    {
+      "id": "req-08",
+      "clientId": "c-03",
+      "product": "Northtrail battery-swap subscription standalone push",
+      "targetAudience": "Existing e-bike owners and price-sensitive commuters aged 25-40",
+      "budgetUSD": 350000,
+      "timeline": "2026-02-01 to 2026-05-31",
+      "pricePoint": "$39/month battery-swap membership",
+      "authorId": "p-jr2",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-09",
+      "clientId": "c-04",
+      "product": "Ledgerline mid-market expansion into healthcare finance teams",
+      "targetAudience": "Finance leads at 100-500 employee healthcare providers",
+      "budgetUSD": 460000,
+      "timeline": "2026-03-01 to 2026-08-31",
+      "pricePoint": "$30,000 average annual contract value (healthcare tier)",
+      "authorId": "p-jr1",
+      "reviserId": "p-ace",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": true
+    },
+    {
+      "id": "req-10",
+      "clientId": "c-05",
+      "product": "Cascade Valley spring festival visitor campaign",
+      "targetAudience": "Families and couples within drive-market range planning spring trips",
+      "budgetUSD": 260000,
+      "timeline": "2026-02-15 to 2026-05-15",
+      "pricePoint": "Festival weekend package positioned around $350 per couple",
+      "authorId": "p-jr2",
+      "reviserId": "p-mid",
+      "submittedVersion": "final",
+      "outcome": "lost",
+      "holdout": false
+    },
+    {
+      "id": "req-11",
+      "clientId": "c-01",
+      "product": "Sunbrook better-for-you baked crisps sub-line launch",
+      "targetAudience": "Health-conscious snack buyers aged 25-44",
+      "budgetUSD": 480000,
+      "timeline": "2026-04-01 to 2026-08-31",
+      "pricePoint": "$4.49 per bag",
+      "authorId": "p-jr1",
+      "reviserId": "p-mid",
+      "submittedVersion": "final",
+      "outcome": "lost",
+      "holdout": false
+    },
+    {
+      "id": "req-12",
+      "clientId": "c-02",
+      "product": "Velura loyalty and replenishment program for moisturizer buyers",
+      "targetAudience": "Existing Velura first-time buyers at risk of lapsing",
+      "budgetUSD": 180000,
+      "timeline": "2026-05-01 to 2026-09-30",
+      "pricePoint": "$29 subscription refill (vs $32 one-off)",
+      "authorId": "p-jr2",
+      "reviserId": "p-mid",
+      "submittedVersion": "final",
+      "outcome": "won",
+      "holdout": false
+    },
+    {
+      "id": "req-13",
+      "clientId": "c-03",
+      "product": "Northtrail cargo e-bike launch for urban families",
+      "targetAudience": "Urban parents aged 30-45 replacing second-car trips",
+      "budgetUSD": 560000,
+      "timeline": "2026-05-15 to 2026-09-30",
+      "pricePoint": "$2,799 upfront or $119/month bundle",
+      "authorId": "p-jr1",
+      "reviserId": null,
+      "submittedVersion": "draft",
+      "outcome": "lost",
+      "holdout": false
+    },
+    {
+      "id": "req-14",
+      "clientId": "c-04",
+      "product": "Ledgerline analytics add-on module upsell campaign",
+      "targetAudience": "Existing Ledgerline customers' CFOs and finance directors",
+      "budgetUSD": 220000,
+      "timeline": "2026-06-01 to 2026-10-31",
+      "pricePoint": "$6,000 annual add-on per account",
+      "authorId": "p-jr2",
+      "reviserId": null,
+      "submittedVersion": "draft",
+      "outcome": "lost",
+      "holdout": false
+    },
+    {
+      "id": "req-15",
+      "clientId": "c-05",
+      "product": "Cascade Valley fall foliage rail-and-trail campaign",
+      "targetAudience": "Travelers under 35 influenced by short-form travel video",
+      "budgetUSD": 330000,
+      "timeline": "2026-08-15 to 2026-11-15",
+      "pricePoint": "Rail-and-trail day pass at $49 per person",
+      "authorId": "p-jr1",
+      "reviserId": null,
+      "submittedVersion": "draft",
+      "outcome": "lost",
+      "holdout": false
+    }
+  ],
+  "personaSeeds": [
+    {
+      "clientId": "c-01",
+      "name": "Maya, 27, 'the snack-drawer curator'",
+      "oneLine": "Urban grocery shopper who grazes between meals, tries new flavors on impulse, but only repurchases brands that feel distinct from private label."
+    },
+    {
+      "clientId": "c-02",
+      "name": "Jordan, 24, 'the ingredient-label reader'",
+      "oneLine": "Skincare-curious young professional who screenshots ingredient lists, trusts niche creators over ads, and abandons brands after one mediocre reorder experience."
+    },
+    {
+      "clientId": "c-03",
+      "name": "Alex, 32, 'the car-tired commuter'",
+      "oneLine": "Mid-size-city office worker with a 7-8 mile commute who wants to ditch the second car but balks at a $2K upfront price tag."
+    },
+    {
+      "clientId": "c-04",
+      "name": "Priya, 41, 'the drowning controller'",
+      "oneLine": "Finance controller at a 200-person company who spends her month-end buried in manual invoices and builds vendor shortlists from peer review sites."
+    },
+    {
+      "clientId": "c-05",
+      "name": "Sam, 29, 'the weekend escape planner'",
+      "oneLine": "City dweller who books drive-distance weekend trips off short-form video inspiration, usually within 30 days of seeing the content."
+    }
+  ]
+}
