@@ -1,83 +1,93 @@
 # Brain Schema Contract (v2 — Memgraph + Weaviate)
 
-このファイルが agent 側 skill 群(writer/reader)とバックエンドの間の API 契約。
-skill は必ずこのファイルを読んでからグラフを触ること。
-ここに無いラベル・エッジ・プロパティ名を勝手に発明しない。
+This file is the API contract between the agent-side skills (writers/readers)
+and the backend. Skills MUST read this file before touching the graph.
+Do not invent labels, edges, or property names that are not listed here.
 
-## ストア構成
+## Stores
 
-| ストア | 役割 | アクセス手段 |
+| Store | Role | Access |
 |---|---|---|
-| Memgraph | グラフ本体(構造・provenance) | `POST http://localhost:3001/cypher` `{query, params}` |
-| Weaviate | セマンティック検索(繋ぎ先候補の発見) | `POST http://localhost:3001/vector-search` `{type, query, limit}` |
-| Memgraph Lab | グラフ可視化(デモ用) | http://localhost:3000 |
+| Memgraph | graph store (structure & provenance) | `POST http://localhost:3001/cypher` `{query, params}` |
+| Weaviate | semantic search (finding connection candidates) | `POST http://localhost:3001/vector-search` `{type, query, limit}` |
+| Memgraph Lab | graph visualization (for the demo) | http://localhost:3000 |
 
-## ノードラベルとプロパティ
+## Node labels and properties
 
-全ノード共通の必須プロパティ: `id`(下記規約), `title`, `created`(YYYY-MM-DD)
+Required properties on every node: `id` (see convention below), `title`,
+`created` (YYYY-MM-DD)
 
-| ラベル | id接頭辞 | 追加プロパティ |
+| Label | id prefix | Additional properties |
 |---|---|---|
 | `Client` | `cli-` | `industry` |
-| `Requirement` | `req-` | `raw`(原文) |
+| `Requirement` | `req-` | `raw` (original text) |
 | `Presentation` | `pres-` | `summary`, `version`: `draft` \| `final` |
 | `Data` | `data-` | `summary`, `source` |
-| `Outcome` | `out-` | `result`: `success` \| `fail`, `reason`(一行、クライアントのフィードバックに基づく) |
-| `Judgment` | `jdg-` | `statement`(ルール本文), `confidence`(0.0-1.0), `status`: `active` \| `contradicted` \| `retired`, `scope`(適用範囲。`global` / `client:cli-x` / `industry:小売` など) |
+| `Outcome` | `out-` | `result`: `success` \| `fail`, `reason` (one line, based on client feedback) |
+| `Judgment` | `jdg-` | `statement` (rule text), `confidence` (0.0-1.0), `status`: `active` \| `contradicted` \| `retired`, `scope` (applicability: `global` / `client:cli-x` / `industry:retail` etc.) |
 | `Attribute` | `attr-` | `kind`: `segment` \| `industry` \| `goal` \| `deliverable` \| `budget` \| `timing` \| `other`, `value` |
-| `Prediction` | `pred-` | `expects`(成功/失敗の予測と根拠一行), `risks`(想定される失敗理由), `scored`(bool, 初期値 false) |
+| `Prediction` | `pred-` | `expects` (predicted success/fail + one-line rationale), `risks` (anticipated failure reasons), `scored` (bool, initially false) |
 
-id は kebab-case: 例 `req-clientx-2026-07`, `jdg-insight-first`, `attr-segment-f50-500`
+ids are kebab-case: e.g. `req-clientx-2026-07`, `jdg-insight-first`,
+`attr-segment-f50-500`
 
-## エッジ種(これ以外を作らない)
+## Edge types (do not create any others)
 
 ```
 (Requirement)-[:FROM_CLIENT]->(Client)
 (Requirement)-[:ANSWERED_BY]->(Presentation)
-(Requirement)-[:HAS_ATTRIBUTE]->(Attribute)      ← 手法B「赤い枝」の実体
+(Requirement)-[:HAS_ATTRIBUTE]->(Attribute)      ← method B: the "red branches"
 (Presentation)-[:FOR_CLIENT]->(Client)
 (Presentation)-[:RESULTED_IN]->(Outcome)
 (Presentation)-[:BACKED_BY]->(Data)
 (Presentation)-[:REVISED_TO]->(Presentation)      ← draft → final
 (Data)-[:ABOUT]->(Attribute)
-(Judgment)-[:DERIVED_FROM]->(任意のノード)         ← provenance の鎖
-(Judgment)-[:SUPPORTED_BY]->(Outcome)             ← 学習の支持証拠
-(Judgment)-[:CONTRADICTED_BY]->(Outcome)          ← 学習の反証
+(Judgment)-[:DERIVED_FROM]->(any node)            ← the provenance chain
+(Judgment)-[:SUPPORTED_BY]->(Outcome)             ← supporting evidence
+(Judgment)-[:CONTRADICTED_BY]->(Outcome)          ← contradicting evidence
 (Prediction)-[:ABOUT]->(Requirement)
 (Prediction)-[:BASED_ON]->(Judgment)
 ```
 
-## Judgment のライフサイクル(/brain-learn が管理)
+## Judgment lifecycle (managed by /brain-learn)
 
-- 新規作成時: `confidence: 0.5`, `status: active`。必ず `DERIVED_FROM` を1本以上張る。
-- 支持する Outcome が増えるたび `confidence +0.1`(上限 0.95)+ `SUPPORTED_BY` エッジ。
-- 矛盾する Outcome が出るたび `confidence -0.2` + `CONTRADICTED_BY` エッジ。
-- `confidence < 0.3` になったら `status: contradicted`。復活は full-scan の再評価でのみ。
-- `scope` は必ず付ける。無条件に一般化できる確証がない限り `global` にしない。
-- 帰属の注意: Outcome の `reason` が資料内容と無関係(価格・関係性・タイミング等)の場合、
-  その Outcome は judgment の証拠として使わない(エッジを張らない)。
+- On creation: `confidence: 0.5`, `status: active`. Always attach at least
+  one `DERIVED_FROM` edge.
+- Each supporting Outcome: `confidence +0.1` (cap 0.95) + a `SUPPORTED_BY` edge.
+- Each contradicting Outcome: `confidence -0.2` + a `CONTRADICTED_BY` edge.
+- When `confidence < 0.3`: set `status: contradicted`. Revival only via
+  full-scan re-evaluation.
+- Always set `scope`. Do not use `global` unless there is real evidence the
+  rule generalizes unconditionally.
+- Attribution caveat: if an Outcome's `reason` is unrelated to the content of
+  the materials (price, relationships, timing, etc.), do NOT use that Outcome
+  as evidence for any judgment (no edges).
 
-## 二重書き込みルール
+## Dual-write rule
 
-テキストを持つノード(`Requirement`, `Judgment`, `Data`, `Presentation`)は
-Memgraph への MERGE と同時に Weaviate の同名コレクションへ upsert する。
-Weaviate オブジェクトは `{ gid: <グラフのid>, text: <検索対象テキスト> }` を持つ。
-`gid` が検索ヒット→グラフ traverse への橋。
+Text-bearing nodes (`Requirement`, `Judgment`, `Data`, `Presentation`) are
+upserted into the same-named Weaviate collection at the same time as the
+Memgraph MERGE. The Weaviate object carries
+`{ gid: <graph id>, text: <searchable text> }`.
+`gid` is the bridge from a search hit back to graph traversal.
 
-- `POST /node` が実装済みならそれを使う(1リクエストで両ストアに書く)。
-- 404 なら `POST /cypher` のみで書き、応答に「vector index 未同期」と明記する。
+- If `POST /node` is implemented, use it (writes both stores in one request).
+- If it returns 404, write via `POST /cypher` only and state explicitly in
+  your response that the vector index is out of sync.
 
-## バックエンドへの要求仕様(未実装分)
+## Backend requirements (not yet implemented)
 
-1. `POST /node` — body: `{ label, id, props, text? }`。Memgraph に MERGE、
-   text があれば Weaviate の label コレクションへ gid 付き upsert。
-2. 起動時 ensure: Weaviate に `Requirement` / `Judgment` / `Data` / `Presentation`
-   コレクションが無ければ作成。
+1. `POST /node` — body: `{ label, id, props, text? }`. MERGE into Memgraph;
+   if `text` is present, upsert into the label's Weaviate collection with `gid`.
+2. Ensure on startup: create the `Requirement` / `Judgment` / `Data` /
+   `Presentation` collections in Weaviate if they don't exist.
 
-## ルール
+## Rules
 
-1. ノード作成は必ず `MERGE`(id で)。`CREATE` は使わない — 重複ノードがグラフを汚す。
-2. skill の出力で judgment を引用するときは必ず `id` で引用し、
-   その judgment の `DERIVED_FROM` 先も一緒に示す(provenance の鎖がデモの核)。
-3. 破壊的 Cypher(`DETACH DELETE` 等)は skill からは実行しない。
-4. デモ前に `docker compose` の `mg_data` ボリュームをバックアップすること。
+1. Always create nodes with `MERGE` (on id). Never `CREATE` — duplicate nodes
+   poison the graph.
+2. When a skill cites a judgment in its output, always cite by `id` and show
+   its `DERIVED_FROM` targets as well (the provenance chain is the core of
+   the demo).
+3. Skills never run destructive Cypher (`DETACH DELETE` etc.).
+4. Back up the `mg_data` volume before the demo.
