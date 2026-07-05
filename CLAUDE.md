@@ -1,50 +1,54 @@
 # ggent — company brain
 
-営業提案の「エースの判断」を組織のグラフ資産にするブレイン。
-過去の requirement / presentation / outcome をグラフに蓄積し、
-success/fail から勝ちパターン(Judgment)を学習、新案件の戦略立案に使う。
+A brain that turns the "ace's judgment" in sales proposals into a graph asset
+owned by the organization. It accumulates past requirements / presentations /
+outcomes in a graph, learns winning patterns (Judgments) from success/fail,
+and uses them to plan strategy for new deals.
 
-## アーキテクチャ
+## Architecture
 
 ```
-[skill 群 (.claude/skills/)]  ← エージェント層。オーケストレーションはここ
+[skills (.claude/skills/)]  ← agent layer. Orchestration lives here
         │  curl
         ▼
-[backend :3001]  Hono — POST /cypher, POST /vector-search (予定: POST /node)
+[backend :3001]  Hono — POST /cypher, POST /vector-search (planned: POST /node)
         │                │
         ▼                ▼
 [Memgraph :7687]   [Weaviate :8080]
- グラフ本体          セマンティック検索
- (Lab UI :3000)     (MiniLM ローカルベクトル化)
+ graph store         semantic search
+ (Lab UI :3000)     (vectorized via text2vec-openai; OPENAI_API_KEY required)
 ```
 
-## 契約
+## Contract
 
-**グラフを読み書きする前に必ず `agent/SCHEMA.md` を読むこと。**
-ノードラベル・エッジ種・id 規約・judgment のライフサイクル・二重書き込みルールが
-全てそこに定義されている。スキーマ外のラベルやエッジを発明しない。
+**Always read `agent/SCHEMA.md` before reading or writing the graph.**
+Node labels, edge types, id conventions, the judgment lifecycle, and the
+dual-write rule are all defined there. Do not invent labels or edges outside
+the schema.
 
-## skill パイプライン
+## Skill pipeline
 
-| skill | 役割 | 呼ばれ方 |
+| skill | role | how it's invoked |
 |---|---|---|
-| `/ace-review` | 戦略立案(メインエントリ) | 人が起動。未投入の案件は内部で brain-connect を呼ぶ |
-| `/brain-connect` | requirement のグラフ投入・接続 | ace-review から連鎖 or 単体起動 |
-| `/brain-record` | 結果(success/fail)の記録 | 人が起動。内部で brain-learn を呼ぶ |
-| `/brain-learn` | judgment の抽出・confidence 更新 | brain-record から連鎖。`--full-scan` で全体照合 |
+| `/ace-review` | strategy planning (main entry) | invoked by a human. If the deal isn't in the graph yet, calls brain-connect internally |
+| `/brain-connect` | ingest & connect a requirement into the graph | chained from ace-review, or standalone |
+| `/brain-record` | record a result (success/fail) | invoked by a human. Calls brain-learn internally |
+| `/brain-learn` | extract judgments & update confidence | chained from brain-record. `--full-scan` for a global pass |
 
-ループ: ace-review が Prediction をグラフに書き → 結果が出たら brain-record が採点 →
-brain-learn が judgment の confidence に反映 → 次の ace-review が賢くなる。
+Loop: ace-review writes a Prediction into the graph → when the result lands,
+brain-record scores it → brain-learn feeds it into judgment confidence →
+the next ace-review is smarter.
 
-## 起動
+## Startup
 
 ```bash
-docker compose up -d          # memgraph + weaviate + transformers
+docker compose up -d          # memgraph + weaviate (put OPENAI_API_KEY in .env)
 npm run dev -w backend        # :3001
 ```
 
-## 開発メモ
+## Dev notes
 
-- backend のエンドポイント実装は backend チーム担当。agent 側からの要求仕様は
-  `agent/SCHEMA.md` の「バックエンドへの要求仕様」節。
-- デモ前に `mg_data` ボリュームをバックアップ(生 Cypher が通るため)。
+- Backend endpoint implementation is owned by the backend team. The agent-side
+  requirements are in the "Backend requirements" section of `agent/SCHEMA.md`.
+- Back up the `mg_data` volume before the demo (raw Cypher is accepted, so
+  mistakes can destroy data).

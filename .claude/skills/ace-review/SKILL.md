@@ -1,22 +1,25 @@
 ---
 name: ace-review
-description: 案件(requirement)に対する提案戦略を立案するメインエントリポイント。グラフの前例とjudgment(勝ちパターン)を統合し、引用付き戦略ブリーフ+スライド骨子+事前予測を出力する。トリガー例:「この案件の戦略を立てて」「提案作って」「エースならどうする」。
+description: Main entry point for planning a proposal strategy for a deal (requirement). Integrates graph precedents and judgments (winning patterns) to produce a cited strategy brief + slide skeleton + upfront prediction. Trigger examples: "plan the strategy for this deal", "draft a proposal", "what would the ace do".
 ---
 
-# ace-review — 戦略立案(reader)
+# ace-review — strategy planning (reader)
 
-役割: reader。手法B(前例検索)と手法A(judgment)を統合して、成功確率を最大化する
-提案戦略を出す。**全ての判断に provenance(引用の鎖)を付ける** — これがこのブレインの価値。
+Role: reader. Integrates method B (precedent search) and method A (judgments)
+to produce the proposal strategy that maximizes the probability of success.
+**Every decision carries provenance (a chain of citations)** — that is the
+value of this brain.
 
-## 手順
+## Steps
 
-1. **契約を読む**: `agent/SCHEMA.md`。
+1. **Read the contract**: `agent/SCHEMA.md`.
 
-2. **グラフ投入の確認**: 対象 requirement がグラフに存在するか確認:
+2. **Check graph ingestion**: confirm the target requirement exists in the graph:
    `MATCH (r:Requirement {id: $id}) RETURN r`
-   **無ければ Skill tool で `brain-connect` を先に実行**してから続行する。
+   **If missing, run `brain-connect` first via the Skill tool**, then continue.
 
-3. **前例の収集(手法B)**: requirement の赤い枝から共有 Attribute 経由で前例を引く:
+3. **Collect precedents (method B)**: pull precedents through shared Attributes
+   on the requirement's red branches:
    ```cypher
    MATCH (r:Requirement {id: $id})-[:HAS_ATTRIBUTE]->(a:Attribute)<-[:HAS_ATTRIBUTE]-(other:Requirement)
    MATCH (other)-[:ANSWERED_BY]->(p:Presentation)-[:RESULTED_IN]->(o:Outcome)
@@ -25,43 +28,52 @@ description: 案件(requirement)に対する提案戦略を立案するメイン
           p.id, p.summary, o.result, o.reason, collect(DISTINCT d.id) AS data
    ORDER BY shared DESC
    ```
-   同一クライアント(`FROM_CLIENT` が同じ)の前例は別枠で必ず取得し、最優先で扱う。
+   Always fetch same-client precedents (same `FROM_CLIENT`) separately and
+   treat them with top priority.
 
-4. **judgment の収集(手法A)**:
-   - scope が合う active な judgment を Cypher で取得(global + client + industry)
-   - `POST /vector-search` (type: Judgment) で requirement 原文に意味的に近いものも取得
-   - `confidence` 降順で整理。`contradicted` / `retired` は使わない。
+4. **Collect judgments (method A)**:
+   - Fetch active judgments whose scope matches (global + client + industry)
+     via Cypher
+   - Also fetch semantically similar ones via `POST /vector-search`
+     (type: Judgment) against the requirement's raw text
+   - Order by `confidence` descending. Never use `contradicted` / `retired`.
 
-5. **統合 — 優先順位はこの順で固定**:
-   1. 同一クライアントの具体的前例(成功も失敗も)
-   2. scope が一致する judgment
-   3. global な judgment
-   矛盾したら上位が勝つ。採用しなかった下位の根拠も「不採用とその理由」として残す。
+5. **Integration — priority is fixed in this order**:
+   1. Concrete same-client precedents (successes AND failures)
+   2. Judgments with matching scope
+   3. Global judgments
+   On conflict, the higher tier wins. Keep the rejected lower-tier evidence in
+   the output as "not adopted, and why".
 
-6. **アウトプット** — 3層で出す:
+6. **Output** — three layers:
 
-   ### A. 戦略ブリーフ(本体)
-   判断ごとに1ブロック:
-   - 判断内容(何をする / 何を避ける)
-   - 根拠: `jdg-xxx (confidence 0.8, scope: client:cli-x) ← DERIVED_FROM: pres-yyy, out-zzz`
-     の形式で **id の鎖を明示**。前例引用も同様に id で。
-   - 使うべきデータ(前例が BACKED_BY していた Data ノードで今回も使えるもの)
+   ### A. Strategy brief (the core)
+   One block per decision:
+   - The decision (what to do / what to avoid)
+   - Evidence: cite **explicit id chains** in the form
+     `jdg-xxx (confidence 0.8, scope: client:cli-x) ← DERIVED_FROM: pres-yyy, out-zzz`.
+     Cite precedents by id the same way.
+   - Data to use (Data nodes that precedents were BACKED_BY and that apply here)
 
-   ### B. スライド骨子
-   ブリーフの判断をスライド構成に落とす(1枚ごとに: 目的 / 載せる内容 / 根拠にした判断)。
+   ### B. Slide skeleton
+   Translate the brief's decisions into a slide structure (per slide: purpose /
+   content / the decision it rests on).
 
-   ### C. 事前予測(Prediction ノードとしてグラフに書き戻す)
-   - `expects`: 成功すると予測する根拠(依拠した judgment)
-   - `risks`: 失敗するとしたら何が原因か(類似の fail 前例から)
-   - `(pred)-[:ABOUT]->(requirement)`、`(pred)-[:BASED_ON]->(各judgment)` を張り、
-     `scored: false` で MERGE。**結果が出たとき brain-record がこれを採点する** —
-     これがあるから confidence 更新が意味のある学習になる。
+   ### C. Upfront prediction (written back to the graph as a Prediction node)
+   - `expects`: why we predict success (the judgments relied on)
+   - `risks`: if this fails, what will have caused it (from similar fail precedents)
+   - Create `(pred)-[:ABOUT]->(requirement)` and `(pred)-[:BASED_ON]->(each judgment)`,
+     MERGE with `scored: false`. **When the result lands, brain-record scores
+     this** — that is what makes confidence updates meaningful learning.
 
-7. **リスク/反証セクション**: 類似する過去の fail(手順3で `result: 'fail'` のもの)を
-   必ずブリーフ末尾に載せる。「この状況で過去に失敗した例と今回それを避ける手当て」。
+7. **Risk / counter-evidence section**: always end the brief with similar past
+   fails (those with `result: 'fail'` from step 3): "cases that failed in this
+   situation, and how this proposal avoids the same fate".
 
-## 注意
+## Notes
 
-- 前例ゼロ・judgment ゼロでも落ちない: その場合は「ブレインに前例なし」と明示した上で
-  一般論の提案を出し、predictionは confidence の低い仮説として登録する。
-- 引用は必ず実在ノードの id。存在しない id を捏造しない(出力前に Cypher で存在確認)。
+- Never crash on zero precedents / zero judgments: state explicitly that the
+  brain has no precedent, produce a general-knowledge proposal, and register
+  the prediction as a low-confidence hypothesis.
+- Citations must be ids of real nodes. Never fabricate an id (verify existence
+  via Cypher before emitting output).
