@@ -4,5 +4,8 @@
   "outcome": "lost",
   "payment": false,
   "campaignEffect": null,
-  "decisionDate": "2026-02-27"
+  "decisionDate": "2026-02-27",
+  "lossReason": "content",
+  "lossReasonDetail": "proposal-quality",
+  "clientFeedback": "The board felt the proposal was generic \u2014 it pitched the festival itself back at us without addressing why spring occupancy stays soft, and the audience numbers were vague. The winning agency showed sharper visitor math."
 }
